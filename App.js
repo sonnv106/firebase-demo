@@ -1,21 +1,32 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from "react";
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import LoginScreen from "./src/screens/LoginScreen";
+import auth from '@react-native-firebase/auth'
+import BottomTabsNavigator from "./src/screens/BottomTabsNavigator";
 
+const Stack = createNativeStackNavigator();
 export default function App() {
+  const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState();
+  const onAuthStateChanged= (user)=>{
+    console.log(user)
+    setUser(user)
+    if(initializing){
+      setInitializing(false)
+    }
+  }
+  useEffect(()=>{
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber
+  },[])
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator>
+       {user ? <Stack.Screen name='BottomTabsNavigator' component={BottomTabsNavigator} options={{headerShown: false}}/>: <Stack.Screen name="Login" component={LoginScreen} options={{headerShown:false}}/> }
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "362806010640",
+    "firebase_url": "https://taphoasonha-2144c-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "taphoasonha-2144c",
+    "storage_bucket": "taphoasonha-2144c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:362806010640:android:c169b1ec0bbd8b15713b95",
+        "android_client_info": {
+          "package_name": "com.firebasedemo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "362806010640-hucqbsppg5moi08s5pqcss1t87k4hnip.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZ-EuLC6cAdXXOfOzq5x-gemDW-9Q61LU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "362806010640-hucqbsppg5moi08s5pqcss1t87k4hnip.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
