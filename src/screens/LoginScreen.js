@@ -4,82 +4,142 @@ import {
   Text,
   View,
   TextInput,
-  Button,
-  FlatList,
   TouchableOpacity,
   Animated,
-  Easing
+  Easing,
+  Image,
+
 } from "react-native";
 import auth from "@react-native-firebase/auth";
-import firestore from "@react-native-firebase/firestore";
 import { Icon } from "react-native-elements";
-const LoginScreen = () => {
+const LoginScreen = ({ ...props }) => {
+ 
   const [user, setUser] = useState({
     email: "",
     password: "",
   });
-  const [users, setUsers] = useState([{ email: "123123" }]);
-  const slideAnim = useRef(new Animated.Value(-300)).current
+  const slideAnim = useRef(new Animated.Value(-300)).current;
+  const slideInputEmail = useRef(new Animated.Value(-500)).current;
+  const slideInputPassword = useRef(new Animated.Value(-500)).current;
+  const txtForgotPasswordAnim = useRef(new Animated.Value(-1000)).current;
+  const btnSubmitAnim = useRef(new Animated.Value(-500)).current;
+  const btnLoginGoogleAnim = useRef(new Animated.Value(-500)).current;
+  const btnLoginFacebookAnim = useRef(new Animated.Value(-500)).current;
   const handleChangeEmail = (text) => {
     setUser({ ...user, email: text });
   };
   const handleChangePassword = (text) => {
     setUser({ ...user, password: text });
   };
-  const displayLoginForm =()=>{
-    Animated.timing(slideAnim, {
-      toValue: 0,
-      duration: 2000,
-      easing: Easing.bezier(0.68, -0.6, 0.32, 1.6),
-      useNativeDriver: false
-    }).start()
-  }
-  const submitForm = () => {
+  const displayLoginForm = () => {
+    Animated.parallel([
+      Animated.timing(slideAnim, {
+        toValue: 20,
+        duration: 1000,
+        easing: Easing.bezier(0.68, -0.6, 0.32, 1.6),
+        useNativeDriver: false,
+      }),
+      Animated.timing(slideInputEmail, {
+        toValue: 0,
+        duration: 2000,
+        easing: Easing.bezier(0.45, 0, 0.55, 1),
+        useNativeDriver: false,
+      }),
+      Animated.timing(slideInputPassword, {
+        toValue: 0,
+        duration: 2000,
+        easing: Easing.bezier(0.45, 0, 0.55, 1),
+        useNativeDriver: false,
+      }),
+      Animated.timing(txtForgotPasswordAnim, {
+        toValue: 10,
+        duration: 2000,
+        easing: Easing.bezier(0.45, 0, 0.55, 1),
+        useNativeDriver: false,
+      }),
+      Animated.timing(btnSubmitAnim, {
+        toValue: 0,
+        duration: 2000,
+        easing: Easing.bezier(0.45, 0, 0.55, 1),
+        useNativeDriver: false,
+      }),
+      Animated.timing(btnLoginGoogleAnim, {
+        toValue: 0,
+        duration: 2000,
+        easing: Easing.bezier(0.45, 0, 0.55, 1),
+        useNativeDriver: false,
+      }),
+      Animated.timing(btnLoginFacebookAnim, {
+        toValue: 0,
+        duration: 2000,
+        easing: Easing.bezier(0.25, 1, 0.5, 1),
+        useNativeDriver: false,
+      }),
+    ]).start(() => {});
+  };
+  const handleLogin = () => {
+    // auth()
+    //   .createUserWithEmailAndPassword(user.email, user.password)
+    //   .then((data) =>
+    //     firestore()
+    //       .collection("users")
+    //       .doc(data.user.uid)
+    //       .set(user)
+    //       .then(() => {
+    //         console.log("saved!");
+    //       })
+    //       .catch((error) => {
+    //         console.log(error);
+    //       })
+    //   )
+    //   .catch((error) => {
+    //     if (error.code === "auth/email-already-in-use") {
+    //       console.log("That email address is already in use!");
+    //     }
+
+    //     if (error.code === "auth/invalid-email") {
+    //       console.log("That email address is invalid!");
+    //     }
+
+    //     console.error(error);
+    //   });
     auth()
-      .createUserWithEmailAndPassword(user.email, user.password)
-      .then((data) =>
-        firestore()
-          .collection("users")
-          .doc(data.user.uid)
-          .set(user)
-          .then(() => {
-            console.log("saved!");
-          })
-          .catch((error) => {
-            console.log(error);
-          })
-      )
+      .signInWithEmailAndPassword(user.email, user.password)
+      .then((result) => {
+        console.log(result);
+        if (result) {
+          props.navigation.navigate('BottomTabsNavigator',{
+            screen: 'Home'
+          });
+        }
+      })
       .catch((error) => {
-        if (error.code === "auth/email-already-in-use") {
-          console.log("That email address is already in use!");
-        }
-
-        if (error.code === "auth/invalid-email") {
-          console.log("That email address is invalid!");
-        }
-
-        console.error(error);
+        alert('Sai ')
       });
   };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const snapshot = await firestore()
+  //       .collection("users")
+  //       .onSnapshot((querySnapshot) => {
+  //         const newUsers = [];
+  //         querySnapshot.forEach((documentSnapshot) => {
+  //           newUsers.push({ ...documentSnapshot.data() });
+  //         });
+  //         setUsers(newUsers);
+  //       });
+  //   };
+  //   fetchData();
+  //   return () => fetchData;
+  // }, []);
   useEffect(() => {
-    const fetchData = async () => {
-      const snapshot = await firestore()
-        .collection("users")
-        .onSnapshot((querySnapshot) => {
-          const newUsers = [];
-          querySnapshot.forEach((documentSnapshot) => {
-            newUsers.push({ ...documentSnapshot.data() });
-          });
-          setUsers(newUsers);
-        });
-    };
-    fetchData();
-    return () => fetchData();
+    displayLoginForm();
+    return ()=>{
+      console.log('clean up 1' );
+      displayLoginForm;
+    } 
   }, []);
-  useEffect(()=>{
-    displayLoginForm()
-    return displayLoginForm;
-  },[])
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -95,34 +155,88 @@ const LoginScreen = () => {
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pulvinar
         vitae nisi vel molestie.
       </Text>
-      <Animated.View style={[styles.bottomSheet, {position: 'absolute', bottom: slideAnim, width: '100%',}]}>
+
+      <Animated.View
+        style={[styles.bottomSheet, { marginTop: slideAnim, width: "100%" }]}
+      >
         <View style={styles.content}>
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            value={user.email}
-            onChangeText={handleChangeEmail}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            secureTextEntry
-            onChangeText={handleChangePassword}
-            value={user.password}
-          />
-          <View style={styles.viewForgotpassword}>
+          <Animated.View
+            style={{
+              marginRight: slideInputEmail,
+              width: "100%",
+            }}
+          >
+            <TextInput
+              style={styles.inputEmail}
+              placeholder="Email"
+              value={user.email}
+              onChangeText={handleChangeEmail}
+            />
+          </Animated.View>
+          <Animated.View
+            style={{
+              marginLeft: slideInputPassword,
+              width: "100%",
+            }}
+          >
+            <TextInput
+              style={styles.inputPassword}
+              placeholder="Password"
+              secureTextEntry
+              onChangeText={handleChangePassword}
+              value={user.password}
+            />
+          </Animated.View>
+          <Animated.View
+            style={[
+              styles.viewForgotpassword,
+              { marginTop: txtForgotPasswordAnim },
+            ]}
+          >
             <TouchableOpacity style={styles.btnForgotPassword}>
               <Text style={styles.txtForgotPassword}>Forgot Password?</Text>
             </TouchableOpacity>
-          </View>
-
-          <View>
-            <TouchableOpacity style={styles.btnSignIn}>
+          </Animated.View>
+          <Animated.View
+            style={{
+              width: "100%",
+              marginLeft: btnSubmitAnim,
+            }}
+          >
+            <TouchableOpacity style={styles.btnSignIn} onPress={handleLogin}>
               <Text style={styles.txtBtnSignIn}>Sign In</Text>
             </TouchableOpacity>
-          </View>
+          </Animated.View>
+          <Animated.View
+            style={{ marginRight: btnLoginGoogleAnim, width: "100%" }}
+          >
+            <TouchableOpacity style={styles.btnContinueWithGoogle}>
+              <Image
+                source={require("../assets/images/icon-google.png")}
+                style={{ width: 36, height: 36 }}
+              />
+              <Text style={styles.txtContinueGoogle}>Continue with Google</Text>
+              <Icon name="arrowright" type="antdesign" size={24} />
+            </TouchableOpacity>
+          </Animated.View>
+
+          <Animated.View
+            style={{ marginLeft: btnLoginFacebookAnim, width: "100%" }}
+          >
+            <TouchableOpacity style={styles.btnContinueFacebook}>
+              <Image
+                source={require("../assets/images/icon-facebook.png")}
+                style={{ width: 36, height: 36 }}
+              />
+              <Text style={styles.txtContinueGoogle}>
+                Continue with Facebook
+              </Text>
+              <Icon name="arrowright" type="antdesign" size={24} />
+            </TouchableOpacity>
+          </Animated.View>
         </View>
       </Animated.View>
+
       {/* <TextInput
             placeholder="Email"
             onChangeText={handleChangeEmail}
@@ -150,7 +264,25 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FFB140",
   },
-  input: {
+  inputPassword: {
+    borderRadius: 50,
+    borderColor: "#F7F3E3",
+    marginTop: 20,
+    width: "100%",
+    height: 50,
+    padding: 10,
+    paddingHorizontal: 20,
+    backgroundColor: "#FBFBFB",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  inputEmail: {
     borderRadius: 50,
     borderColor: "#F7F3E3",
     marginTop: 20,
@@ -200,20 +332,19 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderTopRightRadius: 35,
     borderTopLeftRadius: 35,
-    marginTop: 20,
-    
   },
   content: {
     paddingTop: 20,
     paddingHorizontal: 20,
     flexDirection: "column",
     flex: 1,
+    alignItems: "center",
   },
   viewForgotpassword: {
-   
     alignItems: "flex-end",
     justifyContent: "flex-end",
-    marginTop: 10,
+
+    width: "100%",
   },
   btnForgotPassword: {
     justifyContent: "center",
@@ -231,16 +362,60 @@ const styles = StyleSheet.create({
   },
   btnSignIn: {
     backgroundColor: "#000",
-    color: "#FFF",
     height: 50,
     borderRadius: 50,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 10
+    marginTop: 20,
   },
-  txtBtnSignIn:{
+  txtBtnSignIn: {
     fontWeight: "800",
     fontSize: 16,
-    color: 'white'
-  }
+    color: "white",
+  },
+  btnContinueWithGoogle: {
+    backgroundColor: "#FFFFFF",
+    height: 50,
+    borderRadius: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 80,
+    flexDirection: "row",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 3.84,
+
+    elevation: 4,
+    paddingHorizontal: 10,
+  },
+  txtContinueGoogle: {
+    flex: 1,
+
+    textAlign: "center",
+    fontSize: 18,
+    fontWeight: "500",
+  },
+  btnContinueFacebook: {
+    marginTop: 20,
+    backgroundColor: "#FFFFFF",
+    height: 50,
+    borderRadius: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 3.84,
+    elevation: 4,
+    paddingHorizontal: 10,
+    marginBottom: 50,
+  },
 });
