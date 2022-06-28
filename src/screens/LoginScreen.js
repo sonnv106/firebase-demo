@@ -18,6 +18,7 @@ const LoginScreen = ({ ...props }) => {
     email: "",
     password: "",
   });
+  auth().verifyPhoneNumber
   const slideAnim = useRef(new Animated.Value(-300)).current;
   const slideInputEmail = useRef(new Animated.Value(-500)).current;
   const slideInputPassword = useRef(new Animated.Value(-500)).current;
@@ -103,7 +104,14 @@ const LoginScreen = ({ ...props }) => {
 
     //     console.error(error);
     //   });
-    auth()
+    if(!user.email || !user.password){
+      alert("Tai khoan khong duoc de trong")
+      return null;
+    }
+   
+    let regexEmail = /^\w+@\w{1,4}(.\w{1,3})+$/;
+    if(regexEmail.test(user.email)){
+      auth()
       .signInWithEmailAndPassword(user.email, user.password)
       .then((result) => {
         console.log(result);
@@ -114,8 +122,9 @@ const LoginScreen = ({ ...props }) => {
         }
       })
       .catch((error) => {
-        alert('Sai ')
+        alert('Tai khoan va mat khau khong dung')
       });
+    }
   };
   // useEffect(() => {
   //   const fetchData = async () => {
