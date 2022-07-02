@@ -8,6 +8,7 @@ import {
   ScrollView,
   Image,
   Platform,
+  Dimensions,
 } from "react-native";
 import { utils } from "@react-native-firebase/app";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
@@ -20,7 +21,7 @@ const AddProduct = ({ navigation }) => {
     name: "",
     price: "",
     amount: "",
-    image: "",
+    image: [],
     // ingredients: '',
     // preserve: '',
     // source:'',
@@ -30,6 +31,7 @@ const AddProduct = ({ navigation }) => {
     // detail: '',
     // category:'',
   });
+  const windowWidth = Dimensions.get("window").width;
   const handleChangeName = (name) => {
     setProduct({ ...product, name });
   };
@@ -46,44 +48,59 @@ const AddProduct = ({ navigation }) => {
         selectionLimit: 5,
       },
       (response) => {
-        setProduct({ ...product, image: response.assets?.[0].uri ?? "" });
+        setProduct({
+          ...product,
+          image: response.assets?.map((item) => {
+            return item.uri;
+          }),
+        });
       }
     );
   };
+  //tai anh tra ve url
+  const getDownloadURL = async (filename) => {
+    let url = await storage().ref(filename).getDownloadURL();
+    return url;
+  };
+  // them san pham
   const addProduct = async () => {
-    const filename = product.image.substring(
-      product.image.lastIndexOf("/") + 1
-    );
-    // const reference = storage().ref(filename)
-
-    const uploadUri =
-      Platform.OS === "ios"
-        ? product.image.replace("file://", "")
-        : product.image.replace("file://", "");
-
-    // const pathToFile=  `${utils.FilePath.PICTURES_DIRECTORY}`
-    console.log(uploadUri)
-    const task = storage().ref(filename).putFile(uploadUri);
+     for (let i = 0; i < product.image.length; i++) {
+       await putFile(product.image[i]).then((fullPath)=>{
+        setProduct({...product, image:[...fullPath]})
+      });
+    }
+    await firestore().collection('products').add(product).then(()=>{
+      console.log('Product added')
+     
+    })
+  };
+  const putFile = (filename) => {
+    let fullPath = '';
+    //pathTofile là tên file được lưu trên storage
+    const pathToFile = filename.substring(filename.lastIndexOf('/')+1)
+    //reference là đường dẫn thư mục trên storage
+    const reference =  storage().ref(`products/${pathToFile}`);
+    //filename là đường dẫn tuyệt đối dẫn tới file trong device
+    const task = reference.putFile(filename);
     task.on("state_changed", (taskSnapshot) => {
-      console.log(
-        `${taskSnapshot.bytesTransferred} transferred out of ${taskSnapshot.totalBytes}`
-      );
+      
     });
     task
-      .then( () => {
-        firestore().collection('products').add(product).then((response)=>{
-          
-        })
-        navigation.navigate('Home')
+      .then((res) => {
+        console.log('adding')
+        fullPath = res?.metadata?.fullPath || '';
       })
       .catch((error) => {
         console.log(error);
       });
+    return new Promise((resolve, reject)=>{
+      try{
+        resolve(fullPath)
+      }catch(error){
+        console.log(error)
+      }
+    });
   };
-  // const getDownloadURL = async (filename) => {
-  //   let url = await storage().ref(filename).getDownloadURL();
-  //   return url;
-  // };
   return (
     <View>
       <ScrollView contentContainerStyle={{ padding: 10 }}>
@@ -107,13 +124,55 @@ const AddProduct = ({ navigation }) => {
           value={product.amount}
           keyboardType="numeric"
         />
-        <TouchableOpacity style={{ marginTop: 30 }} onPress={chooseImage}>
+        <TouchableOpacity style={styles.btnChooseImage} onPress={chooseImage}>
           <Text>Choose Image</Text>
         </TouchableOpacity>
-        {product.image?<Image
-          source={{uri:  product.image}}
-          style={{ width: 100, height: 100, borderRadius: 100 }}
-        />:null}
+        <View style={{ flexDirection: "row" }}>
+          {product.image
+            ? product.image.map((item, index) => {
+                if (product.image.length <= 4) {
+                  return (
+                    <View key={index}>
+                      <TouchableOpacity key={index}>
+                        <Image
+                          source={{ uri: item }}
+                          style={{
+                            width: (windowWidth - 20) / 4,
+                            height: (windowWidth - 20) / 4,
+                          }}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  );
+                } else {
+                  if(index<4){
+                    return (
+                      <View key={index}>
+                        <TouchableOpacity>
+                          <Image
+                            source={{ uri: item }}
+                            style={{
+                              width: (windowWidth - 20) / 4,
+                              height: (windowWidth - 20) / 4,
+                            }}
+                          />
+                          {index === 3 ? (
+                            <View
+                              style={styles.overlayImage}
+                            >
+                              <Text style={{ color: "white", fontSize: 20 }}>{`+${
+                                product.image.length - 3
+                              }`}</Text>
+                            </View>
+                          ) : null}
+                        </TouchableOpacity>
+                      </View>
+                    );
+                  }
+                }
+              })
+            : null}
+        </View>
         <TouchableOpacity style={styles.btnSignIn} onPress={addProduct}>
           <Text style={styles.txtBtnSignIn}>Add</Text>
         </TouchableOpacity>
@@ -160,4 +219,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "white",
   },
+  btnChooseImage: {
+    marginTop: 30,
+    height: 30,
+    backgroundColor: "#F9B500",
+    width: 100,
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  overlayImage:{
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0,0,0,.5)",
+    position: "absolute",
+    justifyContent: "center",
+    alignItems: "center",
+  }
 });

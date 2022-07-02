@@ -14,7 +14,7 @@ function BottomTabsNavigator() {
       labeled={true}
       activeColor="white"
       shifting
-      inactiveColor="#000000"
+      inactiveColor="#FFFFFF"
       barStyle={{ backgroundColor: "#F9B500" }}
     >
       <Tab.Screen
@@ -24,7 +24,9 @@ function BottomTabsNavigator() {
           tabBarIcon: ({ focused, color }) => {
             return <Icon name="home" type="feather" size={24} color={color} />;
           },
+          tabBarColor: '#8E9DCC'
         }}
+
       />
       <Tab.Screen
         name="News"
@@ -40,6 +42,7 @@ function BottomTabsNavigator() {
               />
             );
           },
+          tabBarColor: '#00CC66'
         }}
       />
       <Tab.Screen
@@ -51,6 +54,7 @@ function BottomTabsNavigator() {
               <Icon name="person" type="octicon" size={24} color={color} />
             );
           },
+          tabBarColor: '#F9B500'
         }}
       />
       <Tab.Screen
@@ -68,6 +72,7 @@ function BottomTabsNavigator() {
               />
             );
           },
+          tabBarColor: '#4E4187'
         }}
       />
     </Tab.Navigator>

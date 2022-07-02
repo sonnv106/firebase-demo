@@ -17,10 +17,11 @@ const HomeScreen = ()=>{
         }
       
     },[])
+   
     const renderItem = ({item})=>{
         return(
-            <TouchableOpacity >
-                <Image source={item.image} style={{width: 50, height: 80, }} resizeMode='stretch'/>
+            <TouchableOpacity style={{ height: 80, backgroundColor: '#F9DBBD', borderRadius: 20, padding: 10, margin: 10}}  >
+               
                 <Text>{item.name}</Text>
                 <Text>{item.amount}</Text>
                 <Text>{item.price}</Text>
@@ -29,7 +30,7 @@ const HomeScreen = ()=>{
     }
     return(
         <View>
-           <Text>Home</Text>
+        
            <FlatList data={products} renderItem={renderItem} />
 
         </View>
