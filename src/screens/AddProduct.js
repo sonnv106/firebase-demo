@@ -57,48 +57,57 @@ const AddProduct = ({ navigation }) => {
       }
     );
   };
+  useEffect(()=>{
+    
+  },[product])
   //tai anh tra ve url
   const getDownloadURL = async (filename) => {
     let url = await storage().ref(filename).getDownloadURL();
     return url;
   };
   // them san pham
+
   const addProduct = async () => {
-     for (let i = 0; i < product.image.length; i++) {
-       await putFile(product.image[i]).then((fullPath)=>{
-        setProduct({...product, image:[...fullPath]})
+    //mảng image product đã được upload
+    const response = await uploadImages(product.image);
+    await firestore()
+      .collection("products")
+      .add({...product, image: response})
+      .then(() => {
+        console.log("Saved data!");
       });
-    }
-    await firestore().collection('products').add(product).then(()=>{
-      console.log('Product added')
-     
-    })
+    setProduct({})
   };
-  const putFile = (filename) => {
-    let fullPath = '';
-    //pathTofile là tên file được lưu trên storage
-    const pathToFile = filename.substring(filename.lastIndexOf('/')+1)
-    //reference là đường dẫn thư mục trên storage
-    const reference =  storage().ref(`products/${pathToFile}`);
-    //filename là đường dẫn tuyệt đối dẫn tới file trong device
-    const task = reference.putFile(filename);
-    task.on("state_changed", (taskSnapshot) => {
-      
-    });
-    task
-      .then((res) => {
-        console.log('adding')
-        fullPath = res?.metadata?.fullPath || '';
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    return new Promise((resolve, reject)=>{
-      try{
-        resolve(fullPath)
-      }catch(error){
-        console.log(error)
-      }
+  const uploadImages = async (images) => {
+    let imagesUploaded = [];
+    let urlsUploaded = []
+    for (const image of images) {
+      const url = await uploadAnImage(image);
+      imagesUploaded.push(url);
+    } 
+    for(const imageUploaded of imagesUploaded){
+      const urlUploaded =  await storage().ref(imageUploaded).getDownloadURL()
+      urlsUploaded.push(urlUploaded)
+    }
+    return urlsUploaded;
+  };
+  const uploadAnImage = (filename) => {
+    return new Promise((resolve, reject) => {
+      //pathTofile là tên file được lưu trên storage
+      const pathToFile = filename.substring(filename.lastIndexOf("/") + 1);
+      //reference là đường dẫn thư mục trên storage
+      const reference = storage().ref(`products/${pathToFile}`);
+      //filename là đường dẫn tuyệt đối dẫn tới file trong device
+      const task = reference.putFile(filename);
+      task.on("state_changed", (taskSnapshot) => {});
+      task
+        .then((res) => {
+
+          resolve(res?.metadata?.fullPath || "");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     });
   };
   return (
@@ -145,7 +154,7 @@ const AddProduct = ({ navigation }) => {
                     </View>
                   );
                 } else {
-                  if(index<4){
+                  if (index < 4) {
                     return (
                       <View key={index}>
                         <TouchableOpacity>
@@ -157,12 +166,10 @@ const AddProduct = ({ navigation }) => {
                             }}
                           />
                           {index === 3 ? (
-                            <View
-                              style={styles.overlayImage}
-                            >
-                              <Text style={{ color: "white", fontSize: 20 }}>{`+${
-                                product.image.length - 3
-                              }`}</Text>
+                            <View style={styles.overlayImage}>
+                              <Text
+                                style={{ color: "white", fontSize: 20 }}
+                              >{`+${product.image.length - 3}`}</Text>
                             </View>
                           ) : null}
                         </TouchableOpacity>
@@ -228,12 +235,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  overlayImage:{
+  overlayImage: {
     width: "100%",
     height: "100%",
     backgroundColor: "rgba(0,0,0,.5)",
     position: "absolute",
     justifyContent: "center",
     alignItems: "center",
-  }
+  },
 });
