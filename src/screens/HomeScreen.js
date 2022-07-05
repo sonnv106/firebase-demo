@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -7,11 +7,17 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
+  StatusBar,
 } from "react-native";
+import LinearGradient from "react-native-linear-gradient";
 import firestore from "@react-native-firebase/firestore";
 import storage from "@react-native-firebase/storage";
 const windowWidth = Dimensions.get("window").width;
-const HomeScreen = () => {
+import { formatCurrency } from "../utils/CurrencyFormat";
+import { Header, Icon } from "react-native-elements";
+
+
+const HomeScreen = ({navigation}) => {
   const [products, setProducts] = useState([]);
   useEffect(() => {
     firestore()
@@ -29,36 +35,56 @@ const HomeScreen = () => {
 
   const renderItem = ({ item, index }) => {
     return (
-      <TouchableOpacity
-        style={{
-          backgroundColor: "#F9DBBD",
-          justifyContent: "center",
-          alignItems: "center",
-          flexDirection: "column",
-          width: '45%',
-          paddingHorizontal: 5,
-        }}
-        key={index}
-      >
+      <TouchableOpacity style={styles.itemProduct} key={index}>
         <Image
           source={{ uri: item.image[0] }}
-          style={{ height: 150, width: "100%" }}
+          style={{ width: "100%", height: 200 }}
+          resizeMode="cover"
         />
+
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Text style={[styles.txtPrice, { color: "black" }]}>
+            {"Giá nhập: "}
+          </Text>
+          <Text style={styles.txtPrice}>
+            {formatCurrency(item.price) + "đ"}
+          </Text>
+        </View>
+
         <Text>{item.name}</Text>
-        <Text>{item.amount}</Text>
-        <Text>{item.price}</Text>
+        <Text>{item.packing}</Text>
       </TouchableOpacity>
     );
   };
   return (
     <View style={styles.container}>
+      <StatusBar hidden />
+      <Header
+        ViewComponent={LinearGradient}
+        linearGradientProps={{
+          colors: ["#F9B500", "#F9B500"],
+        }}
+        centerComponent={{
+          text: "Danh sách sản phẩm",
+          style: styles.heading
+        }}
+        leftComponent={
+          <View>
+            {/* <Icon type="antdesign" name="home" color="white" /> */}
+          </View>
+        }
+        rightComponent={<TouchableOpacity onPress={()=>navigation.push('SearchScreen')}>
+          <Icon type="antdesign" name="search1" />
+        </TouchableOpacity>}
+      />
       <FlatList
         data={products}
         renderItem={renderItem}
-        style={{ flex: 1, width: "100%" }}
+        style={styles.flatlist}
         horizontal={false}
         numColumns={2}
-        contentContainerStyle={styles.flatlist}
+        contentContainerStyle={styles.contentContainerStyle}
+        columnWrapperStyle={styles.columnWrapperStyle}
       />
     </View>
   );
@@ -70,13 +96,44 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  flatlist: {
+  contentContainerStyle: {
     flex: 1,
     paddingTop: 10,
-    alignItems: "center",
     width: "100%",
-    
-    backgroundColor: 'blue',
-   
+    alignItems: 'center'
+  },
+  columnWrapperStyle: {
+    borderRadius: 10,
+  },
+  flatlist: { flex: 1, width: "100%" },
+  txtPrice: {
+    marginTop: 10,
+    color: "red",
+    fontSize: 16,
+    fontStyle: "normal",
+    fontWeight: "500",
+  },
+  itemProduct: {
+    justifyContent: "center",
+    flexDirection: "column",
+    width: (windowWidth - 36) / 2,
+    shadowColor: "#000",
+    shadowOpacity: 0.5,
+    elevation: 1,
+    shadowOffset: {
+      height: 0,
+      width: 2,
+    },
+    shadowRadius: 20,
+    backgroundColor: "#FFF",
+    margin: 6,
+    borderRadius: 8,
+    padding: 10,
+  },
+  heading:{
+    fontSize: 18,
+    color: "black",
+    fontFamily: "Oswald-Regular",
+    fontWeight: "400",
   },
 });

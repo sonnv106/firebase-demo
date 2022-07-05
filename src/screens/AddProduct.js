@@ -12,15 +12,15 @@ import {
 } from "react-native";
 import { utils } from "@react-native-firebase/app";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
-
+import { checkNull } from "../utils/CurrencyFormat";
 import storage from "@react-native-firebase/storage";
 import firestore from "@react-native-firebase/firestore";
 
 const AddProduct = ({ navigation }) => {
   const [product, setProduct] = useState({
     name: "",
-    price: "",
-    amount: "",
+    price: null,
+    packing: "",
     image: [],
     // ingredients: '',
     // preserve: '',
@@ -38,8 +38,9 @@ const AddProduct = ({ navigation }) => {
   const handleChangePrice = (price) => {
     setProduct({ ...product, price });
   };
-  const handleChangeAmount = (amount) => {
-    setProduct({ ...product, amount });
+  const handleChangeAmount = (packing) => {
+    
+    setProduct({ ...product, packing });
   };
   const chooseImage = () => {
     launchImageLibrary(
@@ -119,6 +120,7 @@ const AddProduct = ({ navigation }) => {
           onChangeText={handleChangeName}
           value={product.name}
         />
+        {/* {product.name.length===0?<Text style={{color: 'red', paddingLeft: 20, marginTop: 8}}>{"Không được bỏ trống"}</Text>:null} */}
         <TextInput
           style={styles.input}
           placeholder="Giá"
@@ -128,10 +130,10 @@ const AddProduct = ({ navigation }) => {
         />
         <TextInput
           style={styles.input}
-          placeholder="Số lượng"
+          placeholder="Quy cách"
           onChangeText={handleChangeAmount}
-          value={product.amount}
-          keyboardType="numeric"
+          value={product.packing}
+          
         />
         <TouchableOpacity style={styles.btnChooseImage} onPress={chooseImage}>
           <Text>Choose Image</Text>
