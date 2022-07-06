@@ -8,16 +8,34 @@ import {
   TouchableOpacity,
   Dimensions,
   StatusBar,
+  useWindowDimensions,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import firestore from "@react-native-firebase/firestore";
 import storage from "@react-native-firebase/storage";
 const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
 import { formatCurrency } from "../utils/CurrencyFormat";
 import { Header, Icon } from "react-native-elements";
+import { TabView, SceneMap } from "react-native-tab-view";
+import ChatScreen from "./ChatScreen";
+import PhotosScreen from "./PhotosScreen";
+
+const renderScene = SceneMap({
+  first: ChatScreen,
+  second: PhotosScreen,
+});
 
 
-const HomeScreen = ({navigation}) => {
+const HomeScreen = ({ navigation }) => {
+  const layout = useWindowDimensions();
+
+  const [index, setIndex] = React.useState(0);
+  const [routes] = React.useState([
+    { key: 'first', title: 'first' },
+    { key: 'second', title: 'second' },
+  ]);
+
   const [products, setProducts] = useState([]);
   useEffect(() => {
     firestore()
@@ -59,6 +77,7 @@ const HomeScreen = ({navigation}) => {
   return (
     <View style={styles.container}>
       <StatusBar hidden />
+
       <Header
         ViewComponent={LinearGradient}
         linearGradientProps={{
@@ -66,18 +85,31 @@ const HomeScreen = ({navigation}) => {
         }}
         centerComponent={{
           text: "Danh sách sản phẩm",
-          style: styles.heading
+          style: styles.heading,
         }}
         leftComponent={
           <View>
             {/* <Icon type="antdesign" name="home" color="white" /> */}
           </View>
         }
-        rightComponent={<TouchableOpacity onPress={()=>navigation.push('SearchScreen')}>
-          <Icon type="antdesign" name="search1" />
-        </TouchableOpacity>}
+        rightComponent={
+          <TouchableOpacity onPress={() => navigation.navigate("SearchScreen")}>
+            <Icon type="antdesign" name="search1" />
+          </TouchableOpacity>
+        }
       />
-      <FlatList
+      
+      <TabView
+        navigationState={{ index, routes }}
+        renderScene={renderScene}
+        onIndexChange={setIndex}
+        initialLayout={{ width:layout.width}}
+      
+        renderTabBar={(props)=>{
+          console.log(props)
+        }} 
+      />
+      {/* <FlatList
         data={products}
         renderItem={renderItem}
         style={styles.flatlist}
@@ -85,7 +117,7 @@ const HomeScreen = ({navigation}) => {
         numColumns={2}
         contentContainerStyle={styles.contentContainerStyle}
         columnWrapperStyle={styles.columnWrapperStyle}
-      />
+      /> */}
     </View>
   );
 };
@@ -100,7 +132,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 10,
     width: "100%",
-    alignItems: 'center'
+    alignItems: "center",
   },
   columnWrapperStyle: {
     borderRadius: 10,
@@ -130,7 +162,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 10,
   },
-  heading:{
+  heading: {
     fontSize: 18,
     color: "black",
     fontFamily: "Oswald-Regular",

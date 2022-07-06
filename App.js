@@ -5,6 +5,8 @@ import LoginScreen from "./src/screens/LoginScreen";
 import auth from "@react-native-firebase/auth";
 import BottomTabsNavigator from "./src/screens/BottomTabsNavigator";
 import SearchScreen from "./src/screens/SearchScreen";
+import ChatScreen from "./src/screens/ChatScreen";
+import PhotosScreen from "./src/screens/PhotosScreen";
 const Stack = createNativeStackNavigator();
 const config = {
   animation: 'spring',
@@ -46,12 +48,9 @@ export default function App() {
           </Stack.Group>
         )}
         <Stack.Group>
-          <Stack.Screen name="SearchScreen" component={SearchScreen} options={{
-            transitionSpec: {
-              open: config,
-              close: config
-            }
-          }}/>
+          <Stack.Screen name="SearchScreen" component={SearchScreen} />
+          <Stack.Screen name="ChatScreen" component={ChatScreen} />
+          <Stack.Screen name="PhotosScreen" component={PhotosScreen} />
         </Stack.Group>
       </Stack.Navigator>
     </NavigationContainer>
