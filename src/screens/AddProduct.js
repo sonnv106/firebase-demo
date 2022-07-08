@@ -59,7 +59,9 @@ const AddProduct = ({ navigation }) => {
     );
   };
   useEffect(()=>{
-    
+    return ()=>{
+      setProduct
+    }
   },[product])
   //tai anh tra ve url
   const getDownloadURL = async (filename) => {
@@ -74,7 +76,8 @@ const AddProduct = ({ navigation }) => {
     await firestore()
       .collection("products")
       .add({...product, image: response})
-      .then(() => {
+      .then((res) => {
+        console.log(res)
         console.log("Saved data!");
       });
     setProduct({})
