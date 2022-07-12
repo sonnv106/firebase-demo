@@ -3,8 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  FlatList,
-  Image,
   TouchableOpacity,
   Dimensions,
   StatusBar,
@@ -14,8 +12,7 @@ import {
 import LinearGradient from "react-native-linear-gradient";
 
 const windowWidth = Dimensions.get("window").width;
-const windowHeight = Dimensions.get("window").height;
-import { formatCurrency } from "../utils/CurrencyFormat";
+
 import { Header, Icon } from "react-native-elements";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import AllProductsScreen from "./AllProductsScreen";
