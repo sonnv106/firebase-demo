@@ -1,0 +1,11 @@
+
+const enum BILL_STATUS {
+    WAITING_TO_CONFIRM = 0,
+    WAITING_FOR_THE_GOODS = 1,
+    IS_DELIVERING = 2,
+    IS_RECEIVED = 3,
+    IS_CANCELED = 4,
+}
+export {
+    BILL_STATUS
+}
