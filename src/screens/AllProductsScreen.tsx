@@ -14,7 +14,6 @@ import storage from "@react-native-firebase/storage";
 import { formatCurrency } from "../utils/CurrencyFormat";
 
 const windowWidth = Dimensions.get("window").width;
-const windowHeight = Dimensions.get("window").height;
 
 const AllProductsScreen = () => {
   

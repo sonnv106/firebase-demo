@@ -14,17 +14,19 @@ export interface Product{
     category?: string; // danh mục sản phẩm
     urls?: string[];
     distributors?: Distributor[]; // nhà phân phối
-    variants: Variant[];  // biến thể sản phẩm
+    variants?: Variant[];  // biến thể sản phẩm
     display?: boolean; // hiển thị hay không
 }
-interface Variant{
+export interface Variant{
     name?: string;
     import_price?: number; // giá nhập
     price?: number; // giá bán
     amount?: number;
+    packing?: string;
     size?: string; // kích thước
     smell?: string; //mùi vị
     color?: string;  //màu sắc
+    urls?: string[];
 }
 interface Distributor{
     id: string;
