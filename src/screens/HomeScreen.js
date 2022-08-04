@@ -7,7 +7,7 @@ import {
   Dimensions,
   StatusBar,
   useWindowDimensions,
-  Pressable
+  Pressable,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 
@@ -24,10 +24,29 @@ const renderScene = SceneMap({
   condiments: CondimentsScreen,
 });
 
-const HomeScreen = ({ navigation }) => {
-  const layout = useWindowDimensions();
+const LazyPlaceholder = ({route}) => {
+  
+  return(
+    
+      <View
+        style={{
+          backgroundColor: "blue",
+          flex: 1,
+          width: "100%",
+          height: "100%",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Text>{`Waiting for minutes `}</Text>
+      </View>
+  
+  )
+}
 
-  const [index, setIndex] = React.useState(0);
+const HomeScreen = ({ navigation }) => {
+
+  const [index, setIndex] = React.useState(1);
   const [routes] = React.useState([
     { key: "all", title: "Tất cả sản phẩm" },
     { key: "beverages", title: "Đồ uống" },
@@ -37,9 +56,11 @@ const HomeScreen = ({ navigation }) => {
   ]);
 
   const onRenderTabBar = (props) => {
+    
     return (
       <View style={styles.tabBar}>
-        {props.navigationState.routes.map((route, i) => {
+        {props.navigationState.routes.map((route,i) => {
+          
           return (
             <Pressable
               onPress={() => setIndex(i)}
@@ -92,9 +113,14 @@ const HomeScreen = ({ navigation }) => {
         navigationState={{ index, routes }}
         renderScene={renderScene}
         onIndexChange={setIndex}
-        initialLayout={{ width: layout.width }}
-        renderTabBar={onRenderTabBar}
-        // lazy={({route})=>route.name === 'first'}
+        initialLayout={{ width: windowWidth }}
+        renderTabBar={props=>onRenderTabBar(props)}
+        lazy
+        renderLazyPlaceholder={({ route }) => {
+         return(
+          <LazyPlaceholder route={route}/>
+         ) 
+        }}
       />
       {/* <FlatList
         data={products}
@@ -145,7 +171,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 10,
     borderBottomWidth: 0.6,
-    borderBottomColor: '#DDD',
+    borderBottomColor: "#DDD",
     shadowColor: "#FFF", // màu bóng
     shadowOffset: {
       width: 0,
@@ -154,8 +180,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25, //độ mờ của bóng ios
     shadowRadius: 5, // bán kính bóng mờ ios
     elevation: 5, //
-    backgroundColor: '#FFF'
-    
+    backgroundColor: "#FFF",
   },
   btnTab: {
     justifyContent: "center",

@@ -10,6 +10,7 @@ import {
   Platform,
   Dimensions,
   Pressable,
+  ImageBackground,
 } from "react-native";
 import { utils } from "@react-native-firebase/app";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
@@ -17,13 +18,21 @@ import { checkNull } from "../utils/CurrencyFormat";
 import storage from "@react-native-firebase/storage";
 import firestore from "@react-native-firebase/firestore";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Product,Variant } from "../model/product/Products";
+import { Product, Variant } from "../model/product/Products";
 import { formatCurrency } from "../utils/CurrencyFormat";
+import { Icon } from "react-native-elements";
+
+const windowWidth = Dimensions.get("window").width;
+
 const AddProduct = ({ navigation, router }) => {
-  const [product, setProduct] = useState<Product>({id:'', name:'',unit:''});
+  const [product, setProduct] = useState<Product>({
+    id: "",
+    name: "",
+    unit: "",
+  });
   const [variants, setVariants] = useState<Variant[]>([{}]);
-  const [variant, setVariant] = useState<Variant>({})
-  const windowWidth = Dimensions.get("window").width;
+  const [variant, setVariant] = useState<Variant>({});
+
   // const handleChangeName = (name) => {
   //   setProduct({ ...product, name });
   // };
@@ -69,6 +78,8 @@ const AddProduct = ({ navigation, router }) => {
   useEffect(() => {
     return () => {
       setProduct;
+      setVariant;
+      setVariants;
     };
   }, [product]);
   //tai anh tra ve url
@@ -125,8 +136,15 @@ const AddProduct = ({ navigation, router }) => {
     });
   };
   return (
-    <View>
-      <ScrollView contentContainerStyle={{ padding: 10 }}>
+    <View style={styles.container}>
+      <ScrollView
+        contentContainerStyle={{
+          padding: 10,
+          width: windowWidth,
+
+          alignItems: "center",
+        }}
+      >
         <TextInput
           style={styles.input}
           placeholder="Tên sản phẩm"
@@ -136,12 +154,10 @@ const AddProduct = ({ navigation, router }) => {
         />
         {/* {product.name.length===0?<Text style={{color: 'red', paddingLeft: 20, marginTop: 8}}>{"Không được bỏ trống"}</Text>:null} */}
 
-        
-        {variants.map(( item: any, index: number) => {
-          
+        {variants.map((item: any, index: number) => {
           return (
-            <View key={index}>
-              <Text style={{marginTop: 16}}>{`Phân loại ${index+1}`}</Text>
+            <View key={index} style={{ width: "100%" }}>
+              <Text style={{ marginTop: 16 }}>{`Phân loại ${index + 1}`}</Text>
 
               <TextInput
                 style={styles.input}
@@ -153,6 +169,7 @@ const AddProduct = ({ navigation, router }) => {
                   flexDirection: "row",
                   justifyContent: "space-between",
                   marginTop: 8,
+                  width: "100%",
                 }}
               >
                 <View>
@@ -170,9 +187,10 @@ const AddProduct = ({ navigation, router }) => {
                     style={styles.input}
                     placeholder="Giá bán"
                     keyboardType="numeric"
-                    onChangeText={(text: string) => {if(text.length===2){
-
-                    }}}
+                    onChangeText={(text: string) => {
+                      if (text.length === 2) {
+                      }
+                    }}
                   />
                 </View>
                 <View>
@@ -198,7 +216,7 @@ const AddProduct = ({ navigation, router }) => {
                 style={{
                   flexDirection: "row",
                   justifyContent: "space-between",
-                  marginTop:8
+                  marginTop: 8,
                 }}
               >
                 <View style={{ flexDirection: "column" }}>
@@ -229,69 +247,85 @@ const AddProduct = ({ navigation, router }) => {
               <View
                 style={{ borderWidth: 1, borderColor: "#DDD", marginTop: 20 }}
               ></View>
-              <TouchableOpacity style={styles.btnChooseImage} onPress={chooseImageForVariant}>
-          <Text>Choose Image</Text>
-          <View style={{ flexDirection: "row" }}>
-          {variant.urls
-            ? variant.urls.map((item, index) => {
-                if (variant.urls.length <= 4) {
-                  return (
-                    <View key={index}>
-                      <TouchableOpacity key={index}>
-                        <Image
-                          source={{ uri: item }}
-                          style={{
-                            width: (windowWidth - 20) / 4,
-                            height: (windowWidth - 20) / 4,
-                          }}
-                        />
-                      </TouchableOpacity>
-                    </View>
-                  );
-                } else {
-                  if (index < 4) {
-                    return (
-                      <View key={index}>
-                        <TouchableOpacity>
-                          <Image
+              <TouchableOpacity
+                style={styles.btnChooseImage}
+                onPress={chooseImageForVariant}
+              >
+                <Text>Choose Image</Text>
+              </TouchableOpacity>
+              <View
+                style={{
+                  flexDirection: "row",
+                  width: "100%",
+                }}
+              >
+                {variant.urls
+                  ? variant.urls.map((item, index) => {
+                      if (variant.urls.length <= 4) {
+                        return (
+                          <ImageBackground
+                            key={index}
                             source={{ uri: item }}
                             style={{
                               width: (windowWidth - 20) / 4,
                               height: (windowWidth - 20) / 4,
+                              alignItems: "flex-end",
+                              padding: 4,
                             }}
-                          />
-                          {index === 3 ? (
-                            <View style={styles.overlayImage}>
-                              <Text
-                                style={{ color: "white", fontSize: 20 }}
-                              >{`+${variant.urls.length - 3}`}</Text>
+                          >
+                            {/* <TouchableOpacity style={{ justifyContent:'center', alignItems: 'center', backgroundColor: 'red', borderRadius: 20, padding: 2}} onPress={()=>{
+                            setVariant({...variant, urls: })
+                          }}>
+                            <Icon type="antdesign" name= 'close' color={'white'}  size={16}/>  
+                          </TouchableOpacity>  */}
+                          </ImageBackground>
+                        );
+                      } else {
+                        if (index < 4) {
+                          return (
+                            <View key={index}>
+                              <TouchableOpacity>
+                                <Image
+                                  source={{ uri: item }}
+                                  style={{
+                                    width: (windowWidth - 20) / 4,
+                                    height: (windowWidth - 20) / 4,
+                                  }}
+                                />
+                                {index === 3 ? (
+                                  <View style={styles.overlayImage}>
+                                    <Text
+                                      style={{ color: "white", fontSize: 20 }}
+                                    >{`+${variant.urls.length - 3}`}</Text>
+                                  </View>
+                                ) : null}
+                              </TouchableOpacity>
                             </View>
-                          ) : null}
-                        </TouchableOpacity>
-                      </View>
-                    );
-                  }
-                }
-              })
-            : null}
-        </View>
-        </TouchableOpacity>
+                          );
+                        }
+                      }
+                    })
+                  : null}
+              </View>
             </View>
           );
         })}
-        <Pressable
-          style={styles.btnChooseImage}
-          onPress={() => {
-            console.log(variants)
-            setVariants([...variants, {}  ]);
-          }}
-        >
-          <Text>Thêm biến thể</Text>
-        </Pressable>
-        <TouchableOpacity style={styles.btnChooseImage} onPress={chooseImage}>
+        <View style={{ width: "100%" }}>
+          <Pressable
+            style={styles.btnChooseImage}
+            onPress={() => {
+              console.log(variants);
+
+              setVariants([...variants, {}]);
+            }}
+          >
+            <Text>Thêm biến thể</Text>
+          </Pressable>
+        </View>
+        {/* <TouchableOpacity style={styles.btnChooseImage} onPress={chooseImage}>
           <Text>Choose Image</Text>
-        </TouchableOpacity>
-        <View style={{ flexDirection: "row" }}>
+        </TouchableOpacity> */}
+        {/* <View style={{ flexDirection: "row" }}>
           {product.urls
             ? product.urls.map((item, index) => {
                 if (product.urls.length <= 4) {
@@ -334,7 +368,7 @@ const AddProduct = ({ navigation, router }) => {
                 }
               })
             : null}
-        </View>
+        </View> */}
         <TouchableOpacity style={styles.btnSignIn} onPress={addProduct}>
           <Text style={styles.txtBtnSignIn}>Add</Text>
         </TouchableOpacity>
@@ -346,9 +380,10 @@ export default AddProduct;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#DDD",
+    backgroundColor: "white",
     alignItems: "center",
     justifyContent: "center",
+    width: "100%",
   },
   input: {
     borderRadius: 8,
@@ -374,6 +409,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginTop: 20,
+    // position: "absolute",
+    // bottom: 10,
+    width: "100%",
   },
   txtBtnSignIn: {
     fontWeight: "800",

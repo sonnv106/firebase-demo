@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
 const CondimentsScreen = () => {
+
   return (
     <View style={styles.container}>
       <Text>CondimentsScreen screen</Text>

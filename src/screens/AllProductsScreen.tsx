@@ -16,7 +16,7 @@ import { formatCurrency } from "../utils/CurrencyFormat";
 const windowWidth = Dimensions.get("window").width;
 
 const AllProductsScreen = () => {
-  
+
   const [products, setProducts] = useState([]);
   const fetchData =()=>{
     firestore()

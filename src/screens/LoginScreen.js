@@ -144,7 +144,6 @@ const LoginScreen = ({ ...props }) => {
   useEffect(() => {
     displayLoginForm();
     return ()=>{
-      console.log('clean up 1' );
       displayLoginForm;
     } 
   }, []);

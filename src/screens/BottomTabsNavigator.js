@@ -4,18 +4,20 @@ import HomeScreen from "./HomeScreen";
 import NewsScreen from "./NewsScreen";
 import ProfileScreen from "./ProfileScreen";
 import AddProduct from "./AddProduct";
-import { Icon } from "react-native-elements";
+import { Icon, } from "react-native-elements";
 const Tab = createMaterialBottomTabNavigator();
 
 function BottomTabsNavigator() {
   return (
     <Tab.Navigator
-      initialRouteName="Home"
+     
       labeled={true}
       activeColor="white"
       shifting
       inactiveColor="#FFFFFF"
       barStyle={{ backgroundColor: "#F9B500" }}
+      initialRouteName= 'Profile'
+      //shifting có hiển thị nhãn hay không
     >
       <Tab.Screen
         name="Home"
@@ -72,7 +74,8 @@ function BottomTabsNavigator() {
               />
             );
           },
-          tabBarColor: '#4E4187'
+          tabBarColor: '#4E4187',
+          
         }}
       />
     </Tab.Navigator>

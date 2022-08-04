@@ -7,7 +7,9 @@ import BottomTabsNavigator from "./src/screens/BottomTabsNavigator";
 import SearchScreen from "./src/screens/SearchScreen";
 import AllProductsScreen from "./src/screens/AllProductsScreen";
 import BeveragesScreen from "./src/screens/BeveragesScreen";
-import CondimentsScreen from "./src/screens/CondimentsScreen"
+import CondimentsScreen from "./src/screens/CondimentsScreen";
+import messaging from '@react-native-firebase/messaging';
+import { Alert } from "react-native";
 const Stack = createNativeStackNavigator();
 const config = {
   animation: 'spring',
@@ -33,6 +35,15 @@ export default function App() {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     return subscriber;
   }, []);
+  useEffect(()=>{
+    const unsubcribe = messaging().onMessage(async remoteMessage=>{
+      Alert.alert('A new message arrived!', JSON.stringify(remoteMessage))
+    })
+    return unsubcribe;
+  },[])
+  messaging().setBackgroundMessageHandler(async remoteMessage=>{
+    console.log('Message handled in the background!', remoteMessage);
+  })
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
