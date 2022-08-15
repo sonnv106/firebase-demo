@@ -1,7 +1,8 @@
 import { Product } from "../product/Products";
 import { ItemDiscount } from "../bill/Bill";
 export interface User{
-    id: string;
+    id?: string;
+    docId?: string;
     email: string;
     password?: string;
     isAdmin?: boolean;
@@ -15,8 +16,10 @@ export interface User{
     created_at?: number;
     updated_at?: number;
     dateOfBirth?: number;
+    lastActiveTime?: number;
+    status?: number;
     sex?: boolean;
-    codeDiscount: ItemDiscount[];
+    codeDiscount?: ItemDiscount[];
 }
 interface Address{
     city?: string;

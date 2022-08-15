@@ -17,7 +17,7 @@ const SearchScreen = ({ navigation }) => {
         leftComponent={
           <View>
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Icon type="antdesign" name="arrowleft" />
+              <Icon type="antdesign" name="arrowleft" tvParallaxProperties/>
             </TouchableOpacity>
           </View>
         }

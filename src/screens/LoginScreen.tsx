@@ -79,31 +79,7 @@ const LoginScreen = ({ ...props }) => {
     ]).start(() => {});
   };
   const handleLogin = () => {
-    // auth()
-    //   .createUserWithEmailAndPassword(user.email, user.password)
-    //   .then((data) =>
-    //     firestore()
-    //       .collection("users")
-    //       .doc(data.user.uid)
-    //       .set(user)
-    //       .then(() => {
-    //         console.log("saved!");
-    //       })
-    //       .catch((error) => {
-    //         console.log(error);
-    //       })
-    //   )
-    //   .catch((error) => {
-    //     if (error.code === "auth/email-already-in-use") {
-    //       console.log("That email address is already in use!");
-    //     }
-
-    //     if (error.code === "auth/invalid-email") {
-    //       console.log("That email address is invalid!");
-    //     }
-
-    //     console.error(error);
-    //   });
+    
     if(!user.email || !user.password){
       alert("Tai khoan khong duoc de trong")
       return null;
@@ -126,21 +102,7 @@ const LoginScreen = ({ ...props }) => {
       });
     }
   };
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const snapshot = await firestore()
-  //       .collection("users")
-  //       .onSnapshot((querySnapshot) => {
-  //         const newUsers = [];
-  //         querySnapshot.forEach((documentSnapshot) => {
-  //           newUsers.push({ ...documentSnapshot.data() });
-  //         });
-  //         setUsers(newUsers);
-  //       });
-  //   };
-  //   fetchData();
-  //   return () => fetchData;
-  // }, []);
+  
   useEffect(() => {
     displayLoginForm();
     return ()=>{
@@ -152,9 +114,11 @@ const LoginScreen = ({ ...props }) => {
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity style={styles.btnBack}>
-          <Icon name="arrowleft" type="antdesign" size={20} />
+          <Icon name="arrowleft" type="antdesign" size={20} tvParallaxProperties />
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={()=>{
+          props.navigation.navigate('RegisterScreen');
+        }}>
           <Text style={styles.txtRegister}>Register</Text>
         </TouchableOpacity>
       </View>
@@ -176,7 +140,7 @@ const LoginScreen = ({ ...props }) => {
           >
             <TextInput
               style={styles.inputEmail}
-              placeholder="Email"
+              placeholder="Email or phone number"
               value={user.email}
               onChangeText={handleChangeEmail}
             />
@@ -224,7 +188,7 @@ const LoginScreen = ({ ...props }) => {
                 style={{ width: 36, height: 36 }}
               />
               <Text style={styles.txtContinueGoogle}>Continue with Google</Text>
-              <Icon name="arrowright" type="antdesign" size={24} />
+              <Icon name="arrowright" type="antdesign" size={24} tvParallaxProperties />
             </TouchableOpacity>
           </Animated.View>
 
@@ -239,30 +203,12 @@ const LoginScreen = ({ ...props }) => {
               <Text style={styles.txtContinueGoogle}>
                 Continue with Facebook
               </Text>
-              <Icon name="arrowright" type="antdesign" size={24} />
+              <Icon name="arrowright" type="antdesign" size={24} tvParallaxProperties/>
             </TouchableOpacity>
           </Animated.View>
         </View>
       </Animated.View>
 
-      {/* <TextInput
-            placeholder="Email"
-            onChangeText={handleChangeEmail}
-            value={user.email}
-            style={styles.input}
-          />
-          <TextInput
-            placeholder="Password"
-            onChangeText={handleChangePassword}
-            value={user.password}
-            style={styles.input}
-          />
-          <Button onPress={submitForm} title="Sign In" /> */}
-      {/* <FlatList data={users} renderItem={({item})=>{
-            return(
-              <Text>{item.email}</Text>
-            )
-          }} /> */}
     </View>
   );
 };

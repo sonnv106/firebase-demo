@@ -9,6 +9,8 @@ import AllProductsScreen from "./src/screens/AllProductsScreen";
 import BeveragesScreen from "./src/screens/BeveragesScreen";
 import CondimentsScreen from "./src/screens/CondimentsScreen";
 import messaging from '@react-native-firebase/messaging';
+import RegisterScreen from "./src/screens/RegisterScreen";
+import OtpScreen from "./src/screens/OtpScreen";
 import { Alert } from "react-native";
 const Stack = createNativeStackNavigator();
 const config = {
@@ -64,6 +66,8 @@ export default function App() {
           <Stack.Screen name="AllProductsScreen" component={AllProductsScreen}  />
           <Stack.Screen name="BeveragesScreen" component={BeveragesScreen} />
           <Stack.Screen name="CondimentsScreen" component={CondimentsScreen} />
+          <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+          <Stack.Screen name="OtpScreen" component={OtpScreen} />
         </Stack.Group>
       </Stack.Navigator>
     </NavigationContainer>

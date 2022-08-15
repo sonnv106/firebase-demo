@@ -39,7 +39,7 @@ export interface Discount{
     use_status: boolean;
     amount: number
 }
-interface ItemDiscount{
+export interface ItemDiscount{
     id?: string;
     discountMoney: number;
     exp: number;
