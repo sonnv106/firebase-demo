@@ -1,11 +1,12 @@
 import React from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "../redux/actions";
 import auth from '@react-native-firebase/auth'
 const ProfileScreen = ()=>{
+    const dispatch = useDispatch()
     const logout = ()=>{
-        auth().signOut().then(()=>{
-            console.log('User signed out!')
-        })
+        dispatch(logoutUser())
     }
     return(
         <View>

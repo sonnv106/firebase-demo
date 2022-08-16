@@ -11,6 +11,8 @@ import CondimentsScreen from "./src/screens/CondimentsScreen";
 import messaging from '@react-native-firebase/messaging';
 import RegisterScreen from "./src/screens/RegisterScreen";
 import OtpScreen from "./src/screens/OtpScreen";
+import { useDispatch, useSelector } from "react-redux";
+import { autoSignIn } from "./src/redux/actions";
 import { Alert } from "react-native";
 const Stack = createNativeStackNavigator();
 const config = {
@@ -24,19 +26,25 @@ const config = {
     restSpeedThreshold: 0.01,
   },
 };
-export default function App() {
+export default function App({...props}) {
   const [initializing, setInitializing] = useState(true);
-  const [user, setUser] = useState();
-  const onAuthStateChanged = (user) => {
-    setUser(user);
-    if (initializing) {
-      setInitializing(false);
-    }
-  };
+  // const [user, setUser] = useState();
+  const dispatch = useDispatch()
+  
+  // const onAuthStateChanged = (user) => {
+  //   setUser(user);
+  //   if (initializing) {
+  //     setInitializing(false);
+  //   }
+  // };
+  const user = useSelector(state=>state.auth_reducer);
+  
   useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber;
-  }, []);
+    dispatch(autoSignIn())
+   
+    // const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    // return subscriber;
+  },[dispatch]);
   useEffect(()=>{
     const unsubcribe = messaging().onMessage(async remoteMessage=>{
       Alert.alert('A new message arrived!', JSON.stringify(remoteMessage))
@@ -49,7 +57,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {user ? (
+        {user.isAuth ? (
           <Stack.Group>
             <Stack.Screen
               name="BottomTabsNavigator"

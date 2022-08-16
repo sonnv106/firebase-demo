@@ -12,8 +12,10 @@ import {
 } from "react-native";
 import auth from "@react-native-firebase/auth";
 import { Icon } from "react-native-elements";
-const LoginScreen = ({ ...props }) => {
- 
+import { useDispatch } from "react-redux";
+import { loginUser } from "../redux/actions";
+const LoginScreen = ({navigation}) => {
+  const dispatch = useDispatch()
   const [user, setUser] = useState({
     email: "",
     password: "",
@@ -87,19 +89,18 @@ const LoginScreen = ({ ...props }) => {
    
     let regexEmail = /^\w+@\w{1,4}(.\w{1,3})+$/;
     if(regexEmail.test(user.email)){
-      auth()
-      .signInWithEmailAndPassword(user.email, user.password)
-      .then((result) => {
-        console.log(result);
-        if (result) {
-          props.navigation.navigate('BottomTabsNavigator',{
-            screen: 'Home'
-          });
-        }
-      })
-      .catch((error) => {
-        alert('Tai khoan va mat khau khong dung')
-      });
+      dispatch(loginUser(user.email, user.password))
+      // auth()
+      // .signInWithEmailAndPassword(user.email, user.password)
+      // .then((result) => {
+      //  console.log(result)
+      //   if (result) {
+      //     navigation.navigate('BottomTabsNavigator');
+      //   }
+      // })
+      // .catch((error) => {
+      //   alert('Tai khoan va mat khau khong dung')
+      // });
     }
   };
   
@@ -117,7 +118,7 @@ const LoginScreen = ({ ...props }) => {
           <Icon name="arrowleft" type="antdesign" size={20} tvParallaxProperties />
         </TouchableOpacity>
         <TouchableOpacity onPress={()=>{
-          props.navigation.navigate('RegisterScreen');
+          navigation.navigate('RegisterScreen');
         }}>
           <Text style={styles.txtRegister}>Register</Text>
         </TouchableOpacity>

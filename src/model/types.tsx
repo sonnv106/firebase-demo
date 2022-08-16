@@ -1,5 +1,5 @@
-import { Product } from "../product/Products";
-import { ItemDiscount } from "../bill/Bill";
+import { Product } from "./product/Products";
+import { ItemDiscount } from "./bill/Bill";
 export interface User{
     id?: string;
     docId?: string;
@@ -25,4 +25,8 @@ interface Address{
     city?: string;
     district?: string;
     street?: string;
+}
+export interface Action {
+    type: string,
+    payload: any
 }
