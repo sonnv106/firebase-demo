@@ -6,17 +6,28 @@ import {
   TextInput,
   StyleSheet,
   TouchableHighlight,
-  TouchableOpacity
+  TouchableOpacity,
 } from "react-native";
 import { Icon } from "react-native-elements";
 import { Input } from "react-native-elements";
-import { User } from "../model/user/User";
-const RegisterScreen = ({navigation, route}) => {
-  const initialUser: User = { email: "", password: "" };
+import { useDispatch } from "react-redux";
+import { loginUserWithPhoneNumber } from "../redux/api";
+interface User {
+  email: string;
+  password: string;
+}
+const RegisterScreen = ({ navigation, route }) => {
+  const [phone, setPhone] = useState("");
+  const [confirm, setConfirm] = useState(null);
+  const initialUser = { email: "", password: "" };
   const [passwordVisible, setPasswordVisible] = useState(true);
   let [rePassword, setRePassword] = useState("");
   const [user, setUser] = useState<User>(initialUser);
-  const handleChangePhoneNumber = (text: string) => {};
+
+  const dispatch = useDispatch();
+  const handleChangePhoneNumber = (text: string) => {
+    setPhone(text);
+  };
 
   const handleChangePassword = (text: string) => {
     setUser({
@@ -27,9 +38,12 @@ const RegisterScreen = ({navigation, route}) => {
   const handleChangeRepassword = (text: string) => {
     rePassword = text;
   };
-  const handleRegister = ()=>{
+  
+  const handleRegister = () => {
+    
     navigation.navigate('OtpScreen')
-  }
+    // navigation.navigate('OtpScreen'  )
+  };
   return (
     <View style={{ flex: 1 }}>
       <ScrollView
@@ -44,7 +58,6 @@ const RegisterScreen = ({navigation, route}) => {
             <TextInput
               style={styles.inputEmail}
               placeholder="Phone number"
-              value={user.phone}
               onChangeText={handleChangePhoneNumber}
               keyboardType="number-pad"
             />
@@ -61,11 +74,15 @@ const RegisterScreen = ({navigation, route}) => {
               onPress={() => {
                 setPasswordVisible(!passwordVisible);
               }}
-             
               style={styles.btnHiddenPassword}
             >
               {passwordVisible ? (
-                <Icon type="ionicon" name="eye-outline" tvParallaxProperties  size={20}  />
+                <Icon
+                  type="ionicon"
+                  name="eye-outline"
+                  tvParallaxProperties
+                  size={20}
+                />
               ) : (
                 <Icon
                   type="ionicon"
@@ -80,14 +97,13 @@ const RegisterScreen = ({navigation, route}) => {
             <TextInput
               style={styles.inputEmail}
               placeholder="Repassword"
-              value={user.phone}
               onChangeText={handleChangePhoneNumber}
-              secureTextEntry= {passwordVisible}
+              secureTextEntry={passwordVisible}
             />
           </View>
           <TouchableOpacity style={styles.btnSignIn} onPress={handleRegister}>
-              <Text style={styles.txtBtnSignIn}>Register</Text>
-            </TouchableOpacity>
+            <Text style={styles.txtBtnSignIn}>Register</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </View>
@@ -129,11 +145,10 @@ const styles = StyleSheet.create({
   },
   btnHiddenPassword: {
     padding: 10,
-    height: '100%',
-    alignItems: 'center',
+    height: "100%",
+    alignItems: "center",
     flexDirection: "row",
     borderRadius: 100,
-    
   },
   viewPassword: {
     flexDirection: "row",
@@ -149,8 +164,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    
-    
   },
   btnSignIn: {
     backgroundColor: "#000",

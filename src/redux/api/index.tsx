@@ -23,3 +23,7 @@ export const loginUser = async (email: string, password: string)=>{
   }
   // return {isAuth: true, user: response};
 }
+export const loginUserWithPhoneNumber = async (phoneNumber: string)=>{
+  const response = await auth().signInWithPhoneNumber( `+${phoneNumber}`, true)
+  return response;
+}
