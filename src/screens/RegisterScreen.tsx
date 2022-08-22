@@ -5,11 +5,9 @@ import {
   Text,
   TextInput,
   StyleSheet,
-  TouchableHighlight,
   TouchableOpacity,
 } from "react-native";
 import { Icon } from "react-native-elements";
-import { Input } from "react-native-elements";
 import { useDispatch } from "react-redux";
 import { loginUserWithPhoneNumber } from "../redux/api";
 interface User {

@@ -8,4 +8,7 @@ const checkNull = (data) => {
   }
   return data;
 };
-export { formatCurrency, checkNull };
+const isVietnamesePhoneNumber= (number: string) =>{
+  return /(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/.test(number);
+}
+export { formatCurrency, checkNull, isVietnamesePhoneNumber };

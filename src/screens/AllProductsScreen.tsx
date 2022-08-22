@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import firestore from "@react-native-firebase/firestore";
 import storage from "@react-native-firebase/storage";
-import { formatCurrency } from "../utils/CurrencyFormat";
+import { formatCurrency } from "../utils/validate";
 
 const windowWidth = Dimensions.get("window").width;
 

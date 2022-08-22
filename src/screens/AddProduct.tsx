@@ -14,12 +14,12 @@ import {
 } from "react-native";
 import { utils } from "@react-native-firebase/app";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
-import { checkNull } from "../utils/CurrencyFormat";
+import { checkNull } from "../utils/validate";
 import storage from "@react-native-firebase/storage";
 import firestore from "@react-native-firebase/firestore";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Product, Variant } from "../model/product/Products";
-import { formatCurrency } from "../utils/CurrencyFormat";
+import { formatCurrency } from "../utils/validate";
 import { Icon } from "react-native-elements";
 
 const windowWidth = Dimensions.get("window").width;
