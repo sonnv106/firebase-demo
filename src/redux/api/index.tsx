@@ -4,7 +4,7 @@ export const autoSignIn =  ()=>{
     auth().onAuthStateChanged((user)=>{
         if(user){
             resolve({
-                user: user.uid,
+                user: user,
                 isAuth: true
             })
         }else{

@@ -90,17 +90,6 @@ const LoginScreen = ({navigation}) => {
     let regexEmail = /^\w+@\w{1,4}(.\w{1,3})+$/;
     if(regexEmail.test(user.email)){
       dispatch(loginUser(user.email, user.password))
-      // auth()
-      // .signInWithEmailAndPassword(user.email, user.password)
-      // .then((result) => {
-      //  console.log(result)
-      //   if (result) {
-      //     navigation.navigate('BottomTabsNavigator');
-      //   }
-      // })
-      // .catch((error) => {
-      //   alert('Tai khoan va mat khau khong dung')
-      // });
     }
   };
   

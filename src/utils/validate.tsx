@@ -8,7 +8,10 @@ const checkNull = (data) => {
   }
   return data;
 };
-const isVietnamesePhoneNumber= (number: string) =>{
+const isVietnamesePhoneNumber = (number: string) => {
   return /(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/.test(number);
-}
-export { formatCurrency, checkNull, isVietnamesePhoneNumber };
+};
+const checkEmail = (mail: string) => {
+  return (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail))
+};
+export { formatCurrency, checkNull, isVietnamesePhoneNumber, checkEmail };
