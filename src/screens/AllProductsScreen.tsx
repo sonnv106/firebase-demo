@@ -78,6 +78,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     alignItems: "center",
     justifyContent: "center",
+    
   },
   contentContainerStyle: {
     paddingTop: 10,

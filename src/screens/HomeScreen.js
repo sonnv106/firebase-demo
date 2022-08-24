@@ -8,6 +8,7 @@ import {
   StatusBar,
   useWindowDimensions,
   Pressable,
+  ScrollView,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 
@@ -24,62 +25,71 @@ const renderScene = SceneMap({
   condiments: CondimentsScreen,
 });
 
-const LazyPlaceholder = ({route}) => {
-  
-  return(
-    
-      <View
-        style={{
-          backgroundColor: "blue",
-          flex: 1,
-          width: "100%",
-          height: "100%",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Text>{`Waiting for minutes `}</Text>
-      </View>
-  
-  )
-}
+const LazyPlaceholder = ({ route }) => {
+  return (
+    <View
+      style={{
+        backgroundColor: "blue",
+        flex: 1,
+        width: "100%",
+        height: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Text>{`Waiting for minutes `}</Text>
+    </View>
+  );
+};
+const renderTabBar = (props) => (
+  <TabBar
+    {...props}
+    indicatorStyle={{ backgroundColor: "white" }}
+    style={{ backgroundColor: "pink" }}
+  />
+);
 
 const HomeScreen = ({ navigation }) => {
-
   const [index, setIndex] = React.useState(1);
   const [routes] = React.useState([
     { key: "all", title: "Tất cả sản phẩm" },
     { key: "beverages", title: "Đồ uống" },
     { key: "condiments", title: "Gia vị" },
-    // { key: "confections", title: "Bánh kẹo" },
-    // { key: "dairyProducts", title: "Sữa" },
   ]);
 
   const onRenderTabBar = (props) => {
-    
     return (
       <View style={styles.tabBar}>
-        {props.navigationState.routes.map((route,i) => {
-          
-          return (
-            <Pressable
-              onPress={() => setIndex(i)}
-              key={i}
-              style={[
-                styles.btnTab,
-                {
-                  borderWidth: index === i ? 0.5 : 0,
-                  backgroundColor: index === i ? "#F9B500" : "#FFF",
-                  borderColor: "#F9B500",
-                },
-              ]}
-            >
-              <View style={[styles.viewTxtBtnTabs]}>
-                <Text>{route.title}</Text>
-              </View>
-            </Pressable>
-          );
-        })}
+        <ScrollView
+          horizontal
+          style={{ height: "100%", width: "100%" }}
+          contentContainerStyle={{
+            paddingVertical: 10,
+            backgroundColor: "red",
+            width: "100%",
+          }}
+        >
+          {props.navigationState.routes.map((route, i) => {
+            return (
+              <Pressable
+                onPress={() => setIndex(i)}
+                key={i}
+                style={[
+                  styles.btnTab,
+                  {
+                    borderWidth: index === i ? 0.5 : 0,
+                    backgroundColor: index === i ? "#F9B500" : "#FFF",
+                    borderColor: "#F9B500",
+                  },
+                ]}
+              >
+                <View style={[styles.viewTxtBtnTabs]}>
+                  <Text>{route.title}</Text>
+                </View>
+              </Pressable>
+            );
+          })}
+        </ScrollView>
       </View>
     );
   };
@@ -114,13 +124,12 @@ const HomeScreen = ({ navigation }) => {
         renderScene={renderScene}
         onIndexChange={setIndex}
         initialLayout={{ width: windowWidth }}
-        renderTabBar={props=>onRenderTabBar(props)}
+        renderTabBar={(props) => onRenderTabBar(props)}
         lazy
         renderLazyPlaceholder={({ route }) => {
-         return(
-          <LazyPlaceholder route={route}/>
-         ) 
+          return <LazyPlaceholder route={route} />;
         }}
+        
       />
       {/* <FlatList
         data={products}
@@ -138,6 +147,7 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: windowWidth
     // alignItems: "center",
     // justifyContent: "center",
   },
@@ -169,7 +179,7 @@ const styles = StyleSheet.create({
     height: 50,
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 10,
+
     borderBottomWidth: 0.6,
     borderBottomColor: "#DDD",
     shadowColor: "#FFF", // màu bóng
@@ -181,6 +191,7 @@ const styles = StyleSheet.create({
     shadowRadius: 5, // bán kính bóng mờ ios
     elevation: 5, //
     backgroundColor: "#FFF",
+    width: "100%",
   },
   btnTab: {
     justifyContent: "center",
@@ -196,6 +207,7 @@ const styles = StyleSheet.create({
     shadowRadius: 5, // bán kính bóng mờ ios
     elevation: 2, //
     marginHorizontal: 5,
+    width: 100,
   },
   txtBtnTab: {},
   viewTxtBtnTabs: {

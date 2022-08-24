@@ -10,13 +10,12 @@ const Tab = createMaterialBottomTabNavigator();
 function BottomTabsNavigator() {
   return (
     <Tab.Navigator
-     
       labeled={true}
       activeColor="white"
       shifting
       inactiveColor="#FFFFFF"
       barStyle={{ backgroundColor: "#F9B500" }}
-      initialRouteName= 'Profile'
+      initialRouteName= 'Home'
       //shifting có hiển thị nhãn hay không
     >
       <Tab.Screen

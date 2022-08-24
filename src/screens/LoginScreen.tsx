@@ -90,6 +90,7 @@ const LoginScreen = ({navigation}) => {
     let regexEmail = /^\w+@\w{1,4}(.\w{1,3})+$/;
     if(regexEmail.test(user.email)){
       dispatch(loginUser(user.email, user.password))
+      
     }
   };
   

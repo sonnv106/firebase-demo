@@ -30,7 +30,7 @@ export interface Action {
     type: string,
     payload: any
 }
-export default class User implements IUser{
+export class User implements IUser{
     id?: string;
     docId?: string;
     email: string;
@@ -39,15 +39,26 @@ export default class User implements IUser{
     active?: boolean;
     name?: string;
     phone?: string;
-    avatar?: string;
+    avatar: string;
     address?: Address;
     favoriteProduct?: Product[];
     token?: string;
-    created_at?: number;
+    created_at: number;
     updated_at?: number;
     dateOfBirth?: number;
     lastActiveTime?: number;
     status?: number;
     sex?: boolean;
     codeDiscount?: ItemDiscount[];
+}
+
+export interface authState {
+    isAuth: boolean;
+    user: User;
+    error: boolean;
+    data: any
+}
+export interface ActionType {
+    type: string;
+    payload: any;
 }

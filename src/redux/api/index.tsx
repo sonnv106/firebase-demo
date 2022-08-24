@@ -4,11 +4,11 @@ export const autoSignIn =  ()=>{
     auth().onAuthStateChanged((user)=>{
         if(user){
             resolve({
-                user: user,
+                data: user,
                 isAuth: true
             })
         }else{
-            resolve({ isAuth: false, user: {} });
+            resolve({ data: {}, isAuth: false, user: {} });
         }
     })
   }))
@@ -19,9 +19,8 @@ export const logoutUser = ()=>{
 export const loginUser = async (email: string, password: string)=>{
   const response = await auth().signInWithEmailAndPassword(email, password);
   if(response){
-    return {isAuth: true, user: response.user.uid}
+    return {isAuth: true, data: response.user}
   }
-  // return {isAuth: true, user: response};
 }
 export const loginUserWithPhoneNumber = async (phoneNumber: string)=>{
   const response = await auth().signInWithPhoneNumber( `+${phoneNumber}`, true)

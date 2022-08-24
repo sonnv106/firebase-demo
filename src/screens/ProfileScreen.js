@@ -13,8 +13,6 @@ const ProfileScreen = () => {
   return (
     <View>
       <Button title="Logout" onPress={logout} />
-
-      
     </View>
   );
 };
