@@ -65,7 +65,6 @@ const HomeScreen = ({ navigation }) => {
           style={{ height: "100%", width: "100%" }}
           contentContainerStyle={{
             paddingVertical: 10,
-            backgroundColor: "red",
             width: "100%",
           }}
         >

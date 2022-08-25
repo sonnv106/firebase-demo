@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, Text, TouchableOpacity, Image, TextInput, StyleSheet} from "react-native";
+import { View, Text, TouchableOpacity, Image, TextInput, StyleSheet, PermissionsAndroid} from "react-native";
+import SmsListener from 'react-native-android-sms-listener'
 import { loginUserWithPhoneNumber } from "../redux/api";
 import auth from '@react-native-firebase/auth'
 import { Icon, Input } from "react-native-elements";
@@ -20,14 +21,22 @@ const OtpScreen = ({ navigation, route }) => {
     }
   };
   const getOTP = ()=>{
-    // const  confirmation = loginUserWithPhoneNumber('84968565096');
-    // console.log("111111",confirmation)
-    // setConfirm(confirmation)
+    const  confirmation = loginUserWithPhoneNumber('84968565096');
+    console.log("111111",confirmation)
+    setConfirm(confirmation)
+  }
+  async function requestReadSmsPermission() {
+    try {
+      await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.READ_SMS,
+      );
+    } catch (err) {}
   }
   useEffect(()=>{
-    getOTP()
+    requestReadSmsPermission
   },[])
   
+
   return (
     <View style={{ flex: 1 }}>
       <View style={{ flexDirection: "row", height: 50, alignItems: "center" }}>
@@ -75,6 +84,7 @@ const OtpScreen = ({ navigation, route }) => {
           ref={txtPassword}
           onChangeText={onChangePassword}
           maxLength={6}
+
         />
         <View
           style={{

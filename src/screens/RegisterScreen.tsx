@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ScrollView,
   View,
@@ -10,23 +10,39 @@ import {
 import { Icon } from "react-native-elements";
 import { useDispatch } from "react-redux";
 import { loginUserWithPhoneNumber } from "../redux/api";
+import RNFS from 'react-native-fs';
+import tinh_tp from '../hanhchinhvn/tinh_tp.json'
+import DropDownPicker from "react-native-dropdown-picker";
 interface User {
-  email: string;
+  name: string;
+  phoneNumber: string;
   password: string;
+  repassword: string;
+  address?: ""
 }
 const RegisterScreen = ({ navigation, route }) => {
   const [phone, setPhone] = useState("");
   const [confirm, setConfirm] = useState(null);
-  const initialUser = { email: "", password: "" };
   const [passwordVisible, setPasswordVisible] = useState(true);
   let [rePassword, setRePassword] = useState("");
-  const [user, setUser] = useState<User>(initialUser);
-
+  const [user, setUser] = useState<User>({
+    name: "",
+    phoneNumber: "",
+    password: "",
+    repassword: "",
+    address: "",
+  });
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(null);
+  const [items, setItems] = useState([]);
+  
   const dispatch = useDispatch();
   const handleChangePhoneNumber = (text: string) => {
     setPhone(text);
   };
+  const handleChangeName = ()=>{
 
+  }
   const handleChangePassword = (text: string) => {
     setUser({
       ...user,
@@ -42,10 +58,20 @@ const RegisterScreen = ({ navigation, route }) => {
     navigation.navigate('OtpScreen')
     // navigation.navigate('OtpScreen'  )
   };
+  useEffect(()=>{
+    var arr = []
+    for(let i in tinh_tp){
+      arr.push(tinh_tp[i])
+    }
+    for(let i= 0; i<arr.length; i++){
+      arr[i]['value']=arr[i].slug
+      arr[i]['label']=arr[i].name
+    }
+    setItems(arr)
+  },[])
   return (
     <View style={{ flex: 1 }}>
-      <ScrollView
-        contentContainerStyle={styles.contentContainerStyle}
+      <View
         style={{ flex: 1 }}
       >
         <View>
@@ -54,11 +80,18 @@ const RegisterScreen = ({ navigation, route }) => {
         <View style={{ flex: 1 }}>
           <View>
             <TextInput
-              style={styles.inputEmail}
+              style={styles.inputName}
+              placeholder="Name"
+              onChangeText={handleChangeName}
+              
+            />
+            <TextInput
+              style={styles.inputName}
               placeholder="Phone number"
               onChangeText={handleChangePhoneNumber}
               keyboardType="number-pad"
             />
+            
           </View>
           <View style={styles.viewPassword}>
             <TextInput
@@ -91,25 +124,62 @@ const RegisterScreen = ({ navigation, route }) => {
               )}
             </TouchableOpacity>
           </View>
-          <View>
+          <View style={styles.viewPassword}>
             <TextInput
-              style={styles.inputEmail}
-              placeholder="Repassword"
-              onChangeText={handleChangePhoneNumber}
+              style={styles.inputPassword}
+              placeholder="********"
+              value={user.password}
+              onChangeText={handleChangePassword}
               secureTextEntry={passwordVisible}
             />
+            <TouchableOpacity
+              onPress={() => {
+                setPasswordVisible(!passwordVisible);
+              }}
+              style={styles.btnHiddenPassword}
+            >
+              {passwordVisible ? (
+                <Icon
+                  type="ionicon"
+                  name="eye-outline"
+                  tvParallaxProperties
+                  size={20}
+                />
+              ) : (
+                <Icon
+                  type="ionicon"
+                  name="eye-off-outline"
+                  tvParallaxProperties
+                  size={20}
+                />
+              )}
+            </TouchableOpacity>
           </View>
+          <TextInput
+              style={styles.inputName}
+              placeholder="Địa chỉ"
+              onChangeText={handleChangePhoneNumber}
+            />
+          <DropDownPicker
+              open={open}
+              value={value}
+              items={items}
+              setOpen={setOpen}
+              setValue={setValue}
+              setItems={setItems}
+          />
           <TouchableOpacity style={styles.btnSignIn} onPress={handleRegister}>
             <Text style={styles.txtBtnSignIn}>Register</Text>
           </TouchableOpacity>
+          
         </View>
-      </ScrollView>
+      </View>
     </View>
   );
 };
 export default RegisterScreen;
 const styles = StyleSheet.create({
-  inputEmail: {
+  inputName: {
     borderRadius: 50,
     borderColor: "#F7F3E3",
     marginTop: 20,
