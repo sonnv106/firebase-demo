@@ -95,7 +95,7 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <StatusBar hidden />
+      <StatusBar hidden/>
 
       <Header
         ViewComponent={LinearGradient}

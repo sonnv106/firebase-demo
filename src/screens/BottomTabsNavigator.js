@@ -46,19 +46,7 @@ function BottomTabsNavigator() {
           tabBarColor: '#00CC66'
         }}
       />
-      <Tab.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{
-          tabBarIcon: ({ focused, color }) => {
-            return (
-              <Icon name="person" type="octicon" size={24} color={color} />
-            );
-          },
-          tabBarColor: '#F9B500'
-        }}
-      />
-      <Tab.Screen
+       <Tab.Screen
         name="Add"
         component={AddProduct}
         options={{
@@ -77,6 +65,19 @@ function BottomTabsNavigator() {
           
         }}
       />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          tabBarIcon: ({ focused, color }) => {
+            return (
+              <Icon name="person" type="octicon" size={24} color={color} />
+            );
+          },
+          tabBarColor: '#F9B500'
+        }}
+      />
+     
     </Tab.Navigator>
   );
 }

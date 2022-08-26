@@ -3,216 +3,199 @@ import {
   ScrollView,
   View,
   Text,
-  TextInput,
+  
   StyleSheet,
   TouchableOpacity,
+  Image,
+  KeyboardAvoidingView,
 } from "react-native";
-import { Icon } from "react-native-elements";
+import { Icon, Input} from "react-native-elements";
 import { useDispatch } from "react-redux";
 import { loginUserWithPhoneNumber } from "../redux/api";
-import RNFS from 'react-native-fs';
-import tinh_tp from '../hanhchinhvn/tinh_tp.json'
+import RNFS from "react-native-fs";
+import tinh_tp from "../hanhchinhvn/tinh_tp.json";
+import quan_huyen from "../hanhchinhvn/quan_huyen.json";
+import xa_phuong from "../hanhchinhvn/xa_phuong.json";
 import DropDownPicker from "react-native-dropdown-picker";
-interface User {
-  name: string;
-  phoneNumber: string;
-  password: string;
-  repassword: string;
-  address?: ""
-}
+
+import { User } from "../model/types";
 const RegisterScreen = ({ navigation, route }) => {
-  const [phone, setPhone] = useState("");
   const [confirm, setConfirm] = useState(null);
   const [passwordVisible, setPasswordVisible] = useState(true);
   let [rePassword, setRePassword] = useState("");
-  const [user, setUser] = useState<User>({
-    name: "",
-    phoneNumber: "",
+  const [userInfo, setUserInfo] = useState<User>({
+    id: "",
+    docId: "",
+    email: "",
     password: "",
-    repassword: "",
-    address: "",
+    isAdmin: false,
+    active: false,
+    name: "",
+    phone: "",
+    avatar: "",
+    address: {
+      city: "",
+      district: "",
+      street: "",
+    },
+    favoriteProduct: [],
+    token: "",
+    created_at: null,
+    updated_at: null,
+    dateOfBirth: null,
+    lastActiveTime: null,
+    status: null,
+    sex: false,
+    codeDiscount: [],
   });
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
-  const [items, setItems] = useState([]);
-  
-  const dispatch = useDispatch();
-  const handleChangePhoneNumber = (text: string) => {
-    setPhone(text);
-  };
-  const handleChangeName = ()=>{
 
-  }
+  const dispatch = useDispatch();
+  const handleChangePhoneNumber = (text: string) => {};
+  const handleChangeName = () => {};
   const handleChangePassword = (text: string) => {
-    setUser({
-      ...user,
+    setUserInfo({
+      ...userInfo,
       password: text,
     });
   };
   const handleChangeRepassword = (text: string) => {
     rePassword = text;
   };
-  
+
   const handleRegister = () => {
-    
-    navigation.navigate('OtpScreen')
+    navigation.navigate("OtpScreen");
     // navigation.navigate('OtpScreen'  )
   };
-  useEffect(()=>{
-    var arr = []
-    for(let i in tinh_tp){
-      arr.push(tinh_tp[i])
-    }
-    for(let i= 0; i<arr.length; i++){
-      arr[i]['value']=arr[i].slug
-      arr[i]['label']=arr[i].name
-    }
-    setItems(arr)
-  },[])
+
+  const getOTP = () => {
+    const confirmation = loginUserWithPhoneNumber(userInfo.phone);
+
+    setConfirm(confirmation);
+  };
   return (
-    <View style={{ flex: 1 }}>
-      <View
-        style={{ flex: 1 }}
+    <View style={{}}>
+      <ScrollView
+        contentContainerStyle={{
+          padding: 20,
+          flexDirection: "column",
+          alignItems: "center",
+        }}
       >
+        <Image
+          source={require("../assets/images/paper-plane.png")}
+          style={{ width: 150, height: 150 }}
+          resizeMode="cover"
+        />
         <View>
           <Text>Đăng ký</Text>
         </View>
-        <View style={{ flex: 1 }}>
-          <View>
-            <TextInput
-              style={styles.inputName}
-              placeholder="Name"
-              onChangeText={handleChangeName}
-              
-            />
-            <TextInput
-              style={styles.inputName}
-              placeholder="Phone number"
-              onChangeText={handleChangePhoneNumber}
-              keyboardType="number-pad"
-            />
-            
-          </View>
-          <View style={styles.viewPassword}>
-            <TextInput
-              style={styles.inputPassword}
-              placeholder="********"
-              value={user.password}
-              onChangeText={handleChangePassword}
-              secureTextEntry={passwordVisible}
-            />
-            <TouchableOpacity
-              onPress={() => {
-                setPasswordVisible(!passwordVisible);
-              }}
-              style={styles.btnHiddenPassword}
-            >
-              {passwordVisible ? (
-                <Icon
-                  type="ionicon"
-                  name="eye-outline"
-                  tvParallaxProperties
-                  size={20}
-                />
-              ) : (
-                <Icon
-                  type="ionicon"
-                  name="eye-off-outline"
-                  tvParallaxProperties
-                  size={20}
-                />
-              )}
-            </TouchableOpacity>
-          </View>
-          <View style={styles.viewPassword}>
-            <TextInput
-              style={styles.inputPassword}
-              placeholder="********"
-              value={user.password}
-              onChangeText={handleChangePassword}
-              secureTextEntry={passwordVisible}
-            />
-            <TouchableOpacity
-              onPress={() => {
-                setPasswordVisible(!passwordVisible);
-              }}
-              style={styles.btnHiddenPassword}
-            >
-              {passwordVisible ? (
-                <Icon
-                  type="ionicon"
-                  name="eye-outline"
-                  tvParallaxProperties
-                  size={20}
-                />
-              ) : (
-                <Icon
-                  type="ionicon"
-                  name="eye-off-outline"
-                  tvParallaxProperties
-                  size={20}
-                />
-              )}
-            </TouchableOpacity>
-          </View>
-          <TextInput
-              style={styles.inputName}
-              placeholder="Địa chỉ"
-              onChangeText={handleChangePhoneNumber}
-            />
-          <DropDownPicker
-              open={open}
-              value={value}
-              items={items}
-              setOpen={setOpen}
-              setValue={setValue}
-              setItems={setItems}
+
+        <View style={{ width: "100%" }}>
+          <Input
+            autoCompleteType
+            style={styles.inputName}
+            placeholder="Name"
+            onChangeText={handleChangeName}
           />
-          <TouchableOpacity style={styles.btnSignIn} onPress={handleRegister}>
-            <Text style={styles.txtBtnSignIn}>Register</Text>
-          </TouchableOpacity>
-          
+          <Input
+          autoCompleteType
+            style={styles.inputName}
+            placeholder="Phone number"
+            onChangeText={handleChangePhoneNumber}
+            keyboardType="number-pad"
+          />
         </View>
-      </View>
+        <View style={styles.viewPassword}>
+          <Input
+          autoCompleteType
+            style={styles.inputPassword}
+            placeholder="Password"
+            value={userInfo.password}
+            onChangeText={handleChangePassword}
+            secureTextEntry={passwordVisible}
+          />
+          <TouchableOpacity
+            onPress={() => {
+              setPasswordVisible(!passwordVisible);
+            }}
+            style={styles.btnHiddenPassword}
+          >
+            {passwordVisible ? (
+              <Icon
+                type="ionicon"
+                name="eye-outline"
+                tvParallaxProperties
+                size={20}
+              />
+            ) : (
+              <Icon
+                type="ionicon"
+                name="eye-off-outline"
+                tvParallaxProperties
+                size={20}
+              />
+            )}
+          </TouchableOpacity>
+        </View>
+        <View style={styles.viewPassword}>
+          <Input
+          autoCompleteType
+            style={styles.inputPassword}
+            placeholder="Confirm Password"
+            value={userInfo.password}
+            onChangeText={handleChangePassword}
+            secureTextEntry={passwordVisible}
+          />
+          <TouchableOpacity
+            onPress={() => {
+              setPasswordVisible(!passwordVisible);
+            }}
+            style={styles.btnHiddenPassword}
+          >
+            {passwordVisible ? (
+              <Icon
+                type="ionicon"
+                name="eye-outline"
+                tvParallaxProperties
+                size={20}
+              />
+            ) : (
+              <Icon
+                type="ionicon"
+                name="eye-off-outline"
+                tvParallaxProperties
+                size={20}
+              />
+            )}
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity style={styles.btnSignIn} onPress={handleRegister}>
+          <Text style={styles.txtBtnSignIn}>Register</Text>
+        </TouchableOpacity>
+      </ScrollView>
     </View>
   );
 };
 export default RegisterScreen;
 const styles = StyleSheet.create({
   inputName: {
-    borderRadius: 50,
-    borderColor: "#F7F3E3",
     marginTop: 20,
     width: "100%",
     height: 50,
-    padding: 10,
-    paddingHorizontal: 20,
-    backgroundColor: "#FBFBFB",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    borderBottomColor: "#DDD",
+    borderBottomWidth: 1,
   },
   inputPassword: {
     borderColor: "#F7F3E3",
-    borderTopLeftRadius: 50,
-    borderBottomLeftRadius: 50,
+
     flex: 1,
     height: 50,
-    padding: 10,
-    paddingHorizontal: 20,
-    backgroundColor: "#FBFBFB",
     shadowColor: "#000",
   },
   contentContainerStyle: {
     paddingHorizontal: 20,
   },
   btnHiddenPassword: {
-    padding: 10,
     height: "100%",
     alignItems: "center",
     flexDirection: "row",
@@ -222,16 +205,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#FBFBFB",
-    borderRadius: 40,
+
+    borderBottomColor: "#DDD",
+    borderBottomWidth: 1,
     marginTop: 20,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
   },
   btnSignIn: {
     backgroundColor: "#000",
@@ -240,6 +217,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginTop: 20,
+    width: "100%",
   },
   txtBtnSignIn: {
     fontWeight: "800",

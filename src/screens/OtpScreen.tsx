@@ -4,9 +4,11 @@ import SmsListener from 'react-native-android-sms-listener'
 import { loginUserWithPhoneNumber } from "../redux/api";
 import auth from '@react-native-firebase/auth'
 import { Icon, Input } from "react-native-elements";
+import { User } from "../model/types";
 const OtpScreen = ({ navigation, route }) => {
   const [confirm, setConfirm]= useState(null)
   const txtPassword = useRef(null);
+  
   useEffect(() => {
     txtPassword.current.focus();
   });
@@ -20,11 +22,7 @@ const OtpScreen = ({ navigation, route }) => {
         return;
     }
   };
-  const getOTP = ()=>{
-    const  confirmation = loginUserWithPhoneNumber('84968565096');
-    console.log("111111",confirmation)
-    setConfirm(confirmation)
-  }
+ 
   async function requestReadSmsPermission() {
     try {
       await PermissionsAndroid.request(
