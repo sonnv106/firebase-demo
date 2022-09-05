@@ -4,7 +4,9 @@ import { Provider } from "react-redux";
 import promiseMiddleware from 'redux-promise'
 import {compose, applyMiddleware, createStore} from 'redux';
 import rootReducer from "./src/redux/reducers";
+import Toast from 'react-native-toast-message'
 import App from "./App";
+import { View,Text } from "react-native";
 if (__DEV__) {
   import("./ReactotronConfig").then(() => console.log("Reactotron Configured"));
 }
@@ -14,9 +16,17 @@ const createStoreWithMiddleware  = createStore(rootReducer, composeEnhancers(app
 messaging().setBackgroundMessageHandler(async remoteMessage=>{
   console.log('Message handled in the background!', remoteMessage);
 })
+const toastConfig = {
+  success:  ({text1 })=>(
+    <View style={{ height: 60, width: '100%', backgroundColor: 'tomato' }}>
+      <Text>{text1}</Text>
+    </View>
+  )
+}
 const reduxApp = ()=>(
   <Provider store={createStoreWithMiddleware}>
     <App/>
+    <Toast config={toastConfig}/>
   </Provider>
 )
 // registerRootComponent calls AppRegistry.registerComponent('main', () => App);

@@ -1,28 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ScrollView,
   View,
   Text,
-  
   StyleSheet,
   TouchableOpacity,
   Image,
-  KeyboardAvoidingView,
+  // KeyboardAvoidingView,
+  TextInput,
 } from "react-native";
-import { Icon, Input} from "react-native-elements";
+import { Icon } from "react-native-elements";
 import { useDispatch } from "react-redux";
 import { loginUserWithPhoneNumber } from "../redux/api";
-import RNFS from "react-native-fs";
-import tinh_tp from "../hanhchinhvn/tinh_tp.json";
-import quan_huyen from "../hanhchinhvn/quan_huyen.json";
-import xa_phuong from "../hanhchinhvn/xa_phuong.json";
-import DropDownPicker from "react-native-dropdown-picker";
-
+// import tinh_tp from "../hanhchinhvn/tinh_tp.json";
+// import quan_huyen from "../hanhchinhvn/quan_huyen.json";
+// import xa_phuong from "../hanhchinhvn/xa_phuong.json";
+// import DropDownPicker from "react-native-dropdown-picker";
+import {
+  formatPhoneNumber,
+  isVietnamesePhoneNumber,
+  showToast,
+} from "../utils/validate";
 import { User } from "../model/types";
 const RegisterScreen = ({ navigation, route }) => {
   const [confirm, setConfirm] = useState(null);
   const [passwordVisible, setPasswordVisible] = useState(true);
-  let [rePassword, setRePassword] = useState("");
+  const [rePasswordVisible, setRePasswordVisible] = useState(true);
+  const [rePassword, setRePassword] = useState("");
   const [userInfo, setUserInfo] = useState<User>({
     id: "",
     docId: "",
@@ -48,69 +52,120 @@ const RegisterScreen = ({ navigation, route }) => {
     sex: false,
     codeDiscount: [],
   });
-
+  const nameRef = useRef(null);
+  const phoneRef = useRef(null);
   const dispatch = useDispatch();
-  const handleChangePhoneNumber = (text: string) => {};
-  const handleChangeName = () => {};
-  const handleChangePassword = (text: string) => {
+
+  const handleChangeName = (username: string) => {
     setUserInfo({
       ...userInfo,
-      password: text,
+      name: username.trim(),
     });
   };
-  const handleChangeRepassword = (text: string) => {
-    rePassword = text;
+  const handleChangePhoneNumber = (phone: string) => {
+    setUserInfo({
+      ...userInfo,
+      phone: formatPhoneNumber(phone.trim()),
+    });
+  };
+  const handleChangePassword = (password: string) => {
+    setUserInfo({
+      ...userInfo,
+      password: password.trim(),
+    });
+  };
+  const handleChangeRepassword = (rePassword: string) => {
+    if (rePassword) {
+      setRePassword(rePassword.trim());
+    } else {
+      setRePassword("");
+    }
   };
 
   const handleRegister = () => {
-    navigation.navigate("OtpScreen");
+    if (userInfo.password !== rePassword) {
+      showToast("error", "Mật khẩu không khớp", "Vui lòng nhập lại");
+      return
+    }
+    if (!userInfo.name) {
+      showToast("error", "Tên không được bỏ trống", "Vui lòng nhập lại");
+      nameRef.current.focus()
+      return;
+    }if (userInfo.name.length<6) {
+      showToast("error", "Tên quá ngắn", "Vui lòng nhập lại");
+      nameRef.current.focus()
+      return;
+    }if (!userInfo.phone) {
+      showToast("error", "Số điện thoại không được bỏ trống", "Vui lòng nhập số điện thoại");
+      phoneRef.current.focus();
+      return;
+    } 
+    if(!isVietnamesePhoneNumber(userInfo.phone)){
+      showToast("error", "Số điện thoại không đúng định dạng", "Vui lòng nhập số điện thoại");
+      phoneRef.current.focus();
+      return;
+    }
+    if (userInfo.password.length < 6) {
+      showToast("error", "Mật khẩu phải lớn hơn hoặc bằng 6 ký tự", "Vui lòng nhập lại");
+      phoneRef.current.focus();
+      return;
+    } else {
+      navigation.navigate("OtpScreen", {
+        data: userInfo
+      });
+    }
+
     // navigation.navigate('OtpScreen'  )
   };
 
   const getOTP = () => {
     const confirmation = loginUserWithPhoneNumber(userInfo.phone);
-
     setConfirm(confirmation);
   };
   return (
-    <View style={{}}>
-      <ScrollView
-        contentContainerStyle={{
-          padding: 20,
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <Image
-          source={require("../assets/images/paper-plane.png")}
-          style={{ width: 150, height: 150 }}
-          resizeMode="cover"
-        />
-        <View>
-          <Text>Đăng ký</Text>
-        </View>
+    <ScrollView
+      contentContainerStyle={{
+        padding: 20,
+        flexDirection: "column",
+        alignItems: "center",
+      }}
+    >
+      <Image
+        source={require("../assets/images/paper-plane.png")}
+        style={{ width: 150, height: 150 }}
+        resizeMode="cover"
+      />
 
-        <View style={{ width: "100%" }}>
-          <Input
-            autoCompleteType
-            style={styles.inputName}
-            placeholder="Name"
-            onChangeText={handleChangeName}
-          />
-          <Input
-          autoCompleteType
-            style={styles.inputName}
-            placeholder="Phone number"
-            onChangeText={handleChangePhoneNumber}
-            keyboardType="number-pad"
-          />
-        </View>
+      <View style={{ width: "100%", flexDirection: "column", marginTop: 20 }}>
+        <Text>Họ và tên</Text>
+        <TextInput
+          ref={nameRef}
+          style={styles.inputName}
+          placeholder="Name"
+          onChangeText={handleChangeName}
+          maxLength={50}
+          value={userInfo.name ? userInfo.name : ""}
+        />
+      </View>
+      <View style={{ width: "100%", flexDirection: "column", marginTop: 20 }}>
+        <Text>Số điện thoại</Text>
+        <TextInput
+          style={styles.inputName}
+          placeholder="Phone number"
+          value={userInfo.phone ? formatPhoneNumber(userInfo.phone) : ""}
+          onChangeText={handleChangePhoneNumber}
+          keyboardType="number-pad"
+          maxLength={10 | 11}
+          ref={phoneRef}
+        />
+      </View>
+      <View style={{ marginTop: 20 }}>
+        <Text>Mật khẩu</Text>
         <View style={styles.viewPassword}>
-          <Input
-          autoCompleteType
+          <TextInput
             style={styles.inputPassword}
             placeholder="Password"
-            value={userInfo.password}
+            value={userInfo.password ? userInfo.password : ""}
             onChangeText={handleChangePassword}
             secureTextEntry={passwordVisible}
           />
@@ -126,6 +181,7 @@ const RegisterScreen = ({ navigation, route }) => {
                 name="eye-outline"
                 tvParallaxProperties
                 size={20}
+                style={{ padding: 10 }}
               />
             ) : (
               <Icon
@@ -133,31 +189,35 @@ const RegisterScreen = ({ navigation, route }) => {
                 name="eye-off-outline"
                 tvParallaxProperties
                 size={20}
+                style={{ padding: 10 }}
               />
             )}
           </TouchableOpacity>
         </View>
+      </View>
+      <View style={{ marginTop: 20 }}>
+        <Text>Nhập lại mật khẩu</Text>
         <View style={styles.viewPassword}>
-          <Input
-          autoCompleteType
+          <TextInput
             style={styles.inputPassword}
             placeholder="Confirm Password"
-            value={userInfo.password}
-            onChangeText={handleChangePassword}
-            secureTextEntry={passwordVisible}
+            value={rePassword ? rePassword : ""}
+            onChangeText={handleChangeRepassword}
+            secureTextEntry={rePasswordVisible}
           />
           <TouchableOpacity
             onPress={() => {
-              setPasswordVisible(!passwordVisible);
+              setRePasswordVisible(!rePasswordVisible);
             }}
             style={styles.btnHiddenPassword}
           >
-            {passwordVisible ? (
+            {rePasswordVisible ? (
               <Icon
                 type="ionicon"
                 name="eye-outline"
                 tvParallaxProperties
                 size={20}
+                style={{ padding: 10 }}
               />
             ) : (
               <Icon
@@ -165,21 +225,21 @@ const RegisterScreen = ({ navigation, route }) => {
                 name="eye-off-outline"
                 tvParallaxProperties
                 size={20}
+                style={{ padding: 10 }}
               />
             )}
           </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.btnSignIn} onPress={handleRegister}>
-          <Text style={styles.txtBtnSignIn}>Register</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </View>
+      </View>
+      <TouchableOpacity style={styles.btnSignIn} onPress={handleRegister}>
+        <Text style={styles.txtBtnSignIn}>Register</Text>
+      </TouchableOpacity>
+    </ScrollView>
   );
 };
 export default RegisterScreen;
 const styles = StyleSheet.create({
   inputName: {
-    marginTop: 20,
     width: "100%",
     height: 50,
     borderBottomColor: "#DDD",
@@ -188,9 +248,9 @@ const styles = StyleSheet.create({
   inputPassword: {
     borderColor: "#F7F3E3",
 
-    flex: 1,
     height: 50,
     shadowColor: "#000",
+    flex: 1,
   },
   contentContainerStyle: {
     paddingHorizontal: 20,
@@ -203,12 +263,10 @@ const styles = StyleSheet.create({
   },
   viewPassword: {
     flexDirection: "row",
-    justifyContent: "center",
     alignItems: "center",
-
+    width: "100%",
     borderBottomColor: "#DDD",
     borderBottomWidth: 1,
-    marginTop: 20,
   },
   btnSignIn: {
     backgroundColor: "#000",
@@ -216,7 +274,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 20,
+    marginTop: 30,
     width: "100%",
   },
   txtBtnSignIn: {

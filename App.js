@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { NavigationContainer} from "@react-navigation/native";
+import { createNativeStackNavigator,  } from "@react-navigation/native-stack";
 import LoginScreen from "./src/screens/LoginScreen";
 import BottomTabsNavigator from "./src/screens/BottomTabsNavigator";
 import SearchScreen from "./src/screens/SearchScreen";
@@ -13,6 +13,9 @@ import OtpScreen from "./src/screens/OtpScreen";
 import {  useDispatch, useSelector } from "react-redux";
 import { Alert } from "react-native";
 import { autoSignIn } from "./src/redux/actions";
+
+
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {
