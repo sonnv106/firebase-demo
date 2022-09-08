@@ -21,15 +21,10 @@ const formatPhoneNumber = (number: string) => {
 const checkEmail = (mail: string) => {
   return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail);
 };
-export {
-  formatCurrency,
-  checkNull,
-  isVietnamesePhoneNumber,
-  checkEmail,
-  formatPhoneNumber,
+const maskPhoneNumber = (phone:string) => {
+  return phone.replace(/(\d{7})(\d{3,4})/, "#######$2");
 };
-
-export const showToast = (type: string, text1: string, text2: string) => {
+const showToast = (type: string, text1: string, text2: string) => {
   switch (type) {
     case "success":
       Toast.show({
@@ -57,3 +52,13 @@ export const showToast = (type: string, text1: string, text2: string) => {
       null;
   }
 };
+export {
+  formatCurrency,
+  checkNull,
+  isVietnamesePhoneNumber,
+  checkEmail,
+  formatPhoneNumber,
+  maskPhoneNumber,
+  showToast
+};
+ 

@@ -23,7 +23,7 @@ import {
 } from "../utils/validate";
 import { User } from "../model/types";
 const RegisterScreen = ({ navigation, route }) => {
-  const [confirm, setConfirm] = useState(null);
+  
   const [passwordVisible, setPasswordVisible] = useState(true);
   const [rePasswordVisible, setRePasswordVisible] = useState(true);
   const [rePassword, setRePassword] = useState("");
@@ -83,10 +83,7 @@ const RegisterScreen = ({ navigation, route }) => {
   };
 
   const handleRegister = () => {
-    if (userInfo.password !== rePassword) {
-      showToast("error", "Mật khẩu không khớp", "Vui lòng nhập lại");
-      return
-    }
+    
     if (!userInfo.name) {
       showToast("error", "Tên không được bỏ trống", "Vui lòng nhập lại");
       nameRef.current.focus()
@@ -105,6 +102,14 @@ const RegisterScreen = ({ navigation, route }) => {
       phoneRef.current.focus();
       return;
     }
+    if(!userInfo.password){
+      showToast('error', 'Mật khẩu không được bỏ trống', 'Vui lòng nhập mật khẩu');
+      return;
+    }
+    if (userInfo.password !== rePassword) {
+      showToast("error", "Mật khẩu không khớp", "Vui lòng nhập lại");
+      return
+    }
     if (userInfo.password.length < 6) {
       showToast("error", "Mật khẩu phải lớn hơn hoặc bằng 6 ký tự", "Vui lòng nhập lại");
       phoneRef.current.focus();
@@ -113,15 +118,14 @@ const RegisterScreen = ({ navigation, route }) => {
       navigation.navigate("OtpScreen", {
         data: userInfo
       });
+      setUserInfo(new User());
+      setRePassword('')
     }
 
     // navigation.navigate('OtpScreen'  )
   };
 
-  const getOTP = () => {
-    const confirmation = loginUserWithPhoneNumber(userInfo.phone);
-    setConfirm(confirmation);
-  };
+ 
   return (
     <ScrollView
       contentContainerStyle={{

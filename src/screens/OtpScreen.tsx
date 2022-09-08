@@ -6,24 +6,9 @@ import auth from '@react-native-firebase/auth'
 import { Icon, Input } from "react-native-elements";
 import { User } from "../model/types";
 import { useRoute } from "@react-navigation/native";
+import { maskPhoneNumber } from "../utils/validate";
 const OtpScreen = ({ navigation, route }) => {
-  // const [confirm, setConfirm]= useState(null)
-  // const txtPassword = useRef(null);
-  
-  // useEffect(() => {
-  //   txtPassword.current.focus();
-  // });
-  // const [passLength, setPassLength] = useState(0);
-  // const onChangePassword = (password: string) => {
-  //   console.log(password)
-  //   if(password.length<=6){
-  //       setPassLength(password.length);
-        
-  //   }else{
-  //       return;
-  //   }
-  // };
- 
+  const [confirm, setConfirm] = useState(null);
   // async function requestReadSmsPermission() {
   //   try {
   //     await PermissionsAndroid.request(
@@ -34,11 +19,15 @@ const OtpScreen = ({ navigation, route }) => {
   // useEffect(()=>{
   //   requestReadSmsPermission
   // },[])
-  const routerX = useRoute();
+  const getOTP = () => {
+    const confirmation = loginUserWithPhoneNumber(route.params?.data?.phone);
+    setConfirm(confirmation);
+  };
   
   const inputRef = useRef(null)
   useEffect(()=>{
-    inputRef.current.focus()
+    inputRef.current.focus();
+    getOTP()
   },[])  
 
   return (
@@ -66,7 +55,7 @@ const OtpScreen = ({ navigation, route }) => {
       </View>
       <View style={styles.container}>
         <Text style={styles.titleOTP}>Nhập OTP</Text>
-        <Text numberOfLines={30} style={styles.txtNote}>Mã otp đã được gửi đến số {`${routerX.params?.data.phone}`}. Vui lòng nhập OTP xác nhận</Text>
+        <Text numberOfLines={30} style={styles.txtNote}>Mã otp đã được gửi đến số {`${maskPhoneNumber(route.params?.data?.phone)}`}. Vui lòng nhập OTP xác nhận</Text>
         <Text></Text>
         <TextInput style={styles.inputOtp} ref={inputRef}/>
         <Pressable style={{backgroundColor: 'black',padding: 10, marginTop: 20 }}>
