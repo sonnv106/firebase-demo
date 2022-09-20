@@ -12,11 +12,10 @@ function BottomTabsNavigator() {
     <Tab.Navigator
       labeled={true}
       activeColor="white"
-      shifting
+      shifting={true}
       inactiveColor="#FFFFFF"
       barStyle={{ backgroundColor: "#F9B500" }}
       initialRouteName= 'Home'
-      //shifting có hiển thị nhãn hay không
     >
       <Tab.Screen
         name="Home"
