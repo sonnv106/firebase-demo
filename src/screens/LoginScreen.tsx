@@ -9,6 +9,7 @@ import {
   Easing,
   Image,
   Platform,
+  SafeAreaView,
 
 } from "react-native";
 import auth from "@react-native-firebase/auth";
@@ -103,7 +104,8 @@ const LoginScreen = ({navigation}) => {
   }, []);
 
   return (
-    <View style={[styles.container,{marginTop: Platform.OS == 'ios' ? 40: 0, }]}>
+    <SafeAreaView style={{flex: 1}}>
+      <View style={[styles.container]}>
       <View style={styles.header}>
         <TouchableOpacity style={styles.btnBack}>
           <Icon name="arrowleft" type="antdesign" size={20} tvParallaxProperties />
@@ -202,6 +204,7 @@ const LoginScreen = ({navigation}) => {
       </Animated.View>
 
     </View>
+    </SafeAreaView>
   );
 };
 export default LoginScreen;
