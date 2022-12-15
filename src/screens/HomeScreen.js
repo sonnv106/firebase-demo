@@ -32,234 +32,49 @@ import { FlatList } from "react-native-gesture-handler";
 const Tab = createMaterialTopTabNavigator();
 
 const MyTabbar = ({ descriptors, navigation, position, state }) => {
-  let refScroll = useRef(null);
-  if (refScroll.current) {
-    refScroll.current.scrollToIndex({ index: state.index });
-  }
-  console.log("11111",descriptors)
-  return(
-    <View></View>
-  )
-  // return (
-  //   <View>
-  //     <FlatList
-  //       horizontal={true}
-  //       ref={refScroll}
-  //       data={state.routes}
-  //       renderItem={(item, index) => {
-  //         const { options } = descriptors[item.key];
-  //         const label =
-  //           options.tabBarLabel !== undefined
-  //             ? options.tabBarLabel
-  //             : options.title !== undefined
-  //             ? options.title
-  //             : item.name;
-
-  //         const isFocused = state.index === index;
-
-  //         const onPress = () => {
-  //           const event = navigation.emit({
-  //             type: "tabPress",
-  //             target: item.key,
-  //             canPreventDefault: true,
-  //           });
-
-  //           if (!isFocused && !event.defaultPrevented) {
-  //             // The `merge: true` option makes sure that the params inside the tab screen are preserved
-  //             navigation.navigate({ name: item.name, merge: true });
-  //           }
-  //         };
-  //         const onLongPress = () => {
-  //           navigation.emit({
-  //             type: "tabLongPress",
-  //             target: item.key,
-  //           });
-  //         };
-
-  //         // const inputRange = state.routes.map((_, i) => i);
-  //         // const opacity = position.interpolate({
-  //         //   inputRange,
-  //         //   outputRange: inputRange.map((i) => (i === index ? 1 : 0)),
-  //         // });
-  //         return (
-  //           <TouchableOpacity
-  //             accessibilityRole="button"
-  //             accessibilityState={isFocused ? { selected: true } : {}}
-  //             accessibilityLabel={options.tabBarAccessibilityLabel}
-  //             testID={options.tabBarTestID}
-  //             onPress={onPress}
-  //             onLongPress={onLongPress}
-  //             style={{
-  //               flex: 1,
-  //               backgroundColor: "yellow",
-  //               justifyContent: "center",
-  //               alignItems: "center",
-  //               borderRadius: 20,
-  //               margin: 5,
-  //               paddingHorizontal: 5,
-  //             }}
-  //             key={index}
-  //           >
-  //             <Animated.Text style={{  textAlign: "center" }}>
-  //               {label}
-  //             </Animated.Text>
-  //           </TouchableOpacity>
-  //         );
-  //       }}
-  //     />
-  //   </View>
-  // );
-  // console.log(position)
-  // return (
-  //   <SafeAreaView>
-  //     <View
-  //       style={{
-  //         flexDirection: "row",
-  //         backgroundColor: "red",
-  //         height: 50,
-  //         alignItems: "center",
-  //         justifyContent: "space-between",
-  //       }}
-  //     >
-  //       {state.routes.map((route, index) => {
-  //         const { options } = descriptors[route.key];
-  //         const label =
-  //           options.tabBarLabel !== undefined
-  //             ? options.tabBarLabel
-  //             : options.title !== undefined
-  //             ? options.title
-  //             : route.name;
-
-  //         const isFocused = state.index === index;
-
-  //         const onPress = () => {
-  //           const event = navigation.emit({
-  //             type: "tabPress",
-  //             target: route.key,
-  //             canPreventDefault: true,
-  //           });
-
-  //           if (!isFocused && !event.defaultPrevented) {
-  //             // The `merge: true` option makes sure that the params inside the tab screen are preserved
-  //             navigation.navigate({ name: route.name, merge: true });
-  //           }
-  //         };
-  //         const onLongPress = () => {
-  //           navigation.emit({
-  //             type: "tabLongPress",
-  //             target: route.key,
-  //           });
-  //         };
-
-  //         const inputRange = state.routes.map((_, i) => i);
-  //         const opacity = position.interpolate({
-  //           inputRange,
-  //           outputRange: inputRange.map((i) => (i === index ? 1 : 0)),
-  //         });
-
-  //         return (
-  //           <TouchableOpacity
-  //             accessibilityRole="button"
-  //             accessibilityState={isFocused ? { selected: true } : {}}
-  //             accessibilityLabel={options.tabBarAccessibilityLabel}
-  //             testID={options.tabBarTestID}
-  //             onPress={onPress}
-  //             onLongPress={onLongPress}
-  //             style={{
-  //               flex: 1,
-  //               backgroundColor: "yellow",
-  //               justifyContent: "center",
-  //               alignItems: "center",
-  //               borderRadius: 20,
-  //               margin: 5,
-  //               paddingHorizontal: 5,
-  //             }}
-  //             key={index}
-  //           >
-  //             <Animated.Text style={{ opacity, textAlign: "center" }}>
-  //               {label}
-  //             </Animated.Text>
-  //           </TouchableOpacity>
-  //         );
-  //       })}
-  //     </View>
-  //   </SafeAreaView>
-  // );
+  // console.log(descriptors, navigation )
+  const inputRange = state.routes.map((_, i) => i);
+  console.log('state index', state.index)
+  console.log('input range', inputRange)
+  const isFocus = state.index;
+  const opacity  = position.interpolate({
+    inputRange: inputRange,
+    outputRange: inputRange.map(i => i === state.index ? 1 : 0)
+  })
+  console.log('opacity', opacity)
+  return (
+    <SafeAreaView>
+      <View
+        style={{
+          flexDirection: "row",
+          backgroundColor: "red",
+          height: 50,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Animated.FlatList
+          data={state.routes}
+          horizontal
+          showsHorizontalScrollIndicator
+          style={{flex: 1}}
+          renderItem={({ item, index }) => {
+            return (
+              <Pressable style={{marginHorizontal: 10}} onPress={()=>{
+                console.log('index', index)
+              }}>
+                <Animated.Text style={{  }}>{item.name}</Animated.Text>
+              </Pressable>
+            );
+          }}
+          getItemLayout={(data,index)=>({length: 80, offset: 80 * index,  index})}
+        />
+      </View>
+    </SafeAreaView>
+  );
 };
-// const renderScene = SceneMap({
-//   all: AllProductsScreen,
-//   beverages: BeveragesScreen,
-//   condiments: CondimentsScreen,
-// });
-
-// const LazyPlaceholder = ({ route }) => {
-//   return (
-//     <View
-//       style={{
-//         backgroundColor: "blue",
-//         flex: 1,
-//         width: "100%",
-//         height: "100%",
-//         justifyContent: "center",
-//         alignItems: "center",
-//       }}
-//     >
-//       <Text>{`Waiting for minutes `}</Text>
-//     </View>
-//   );
-// };
-// const renderTabBar = (props) => (
-//   <TabBar
-//     {...props}
-//     indicatorStyle={{ backgroundColor: "white" }}
-//     style={{ backgroundColor: "pink" }}
-//   />
-// );
 
 const HomeScreen = ({ navigation }) => {
-  // const [index, setIndex] = React.useState(1);
-  // const [routes] = React.useState([
-  //   { key: "all", title: "Tất cả sản phẩm" },
-  //   { key: "beverages", title: "Đồ uống" },
-  //   { key: "condiments", title: "Gia vị" },
-  // ]);
-
-  // const onRenderTabBar = (props) => {
-  //   return (
-  //     <View style={styles.tabBar}>
-  //       <ScrollView
-  //         horizontal
-  //         style={{ height: "100%", width: "100%" }}
-  //         contentContainerStyle={{
-  //           paddingVertical: 10,
-  //           width: "100%",
-  //         }}
-  //       >
-  //         {props.navigationState.routes.map((route, i) => {
-  //           return (
-  //             <Pressable
-  //               onPress={() => setIndex(i)}
-  //               key={i}
-  //               style={[
-  //                 styles.btnTab,
-  //                 {
-  //                   borderWidth: index === i ? 0.5 : 0,
-  //                   backgroundColor: index === i ? "#F9B500" : "#FFF",
-  //                   borderColor: "#F9B500",
-  //                 },
-  //               ]}
-  //             >
-  //               <View style={[styles.viewTxtBtnTabs]}>
-  //                 <Text>{route.title}</Text>
-  //               </View>
-  //             </Pressable>
-  //           );
-  //         })}
-  //       </ScrollView>
-  //     </View>
-  //   );
-  // };
-
   return (
     <View style={{ flexDirection: "column", flex: 1 }}>
       {/* <Header/> */}

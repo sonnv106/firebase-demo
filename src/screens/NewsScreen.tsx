@@ -49,7 +49,7 @@ const NewsScreen = ({ navigation }) => {
   };
   const jumpToBottom = ()=>{
     //@ts-ignore
-    flatListRef.current.scrollToOffset({animated: true, offset: 0})
+    flatListRef.current.scrollToIndex({animated: true, index: 0})
   }
   const onChangeText = (text: string)=>{
     setMessage(text)
@@ -66,6 +66,7 @@ const NewsScreen = ({ navigation }) => {
           renderItem={renderItem}
           inverted
           ref={flatListRef}
+          
         />
         <TouchableOpacity
           style={{
