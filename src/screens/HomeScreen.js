@@ -34,14 +34,11 @@ const Tab = createMaterialTopTabNavigator();
 const MyTabbar = ({ descriptors, navigation, position, state }) => {
   // console.log(descriptors, navigation )
   const inputRange = state.routes.map((_, i) => i);
-  console.log('state index', state.index)
-  console.log('input range', inputRange)
   const isFocus = state.index;
   const opacity  = position.interpolate({
     inputRange: inputRange,
     outputRange: inputRange.map(i => i === state.index ? 1 : 0)
   })
-  console.log('opacity', opacity)
   return (
     <SafeAreaView>
       <View
